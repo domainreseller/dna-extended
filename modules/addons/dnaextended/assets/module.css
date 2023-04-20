@@ -1,0 +1,13 @@
+#contentarea > div:nth-child(1) > h1{
+    display: none;
+}
+
+.actionbuttons2{
+    display: flex
+}
+#domainstable_filter , #filterbystatus{
+    width: 50%;
+}
+.btn-quickaction{
+    display: none;
+}
