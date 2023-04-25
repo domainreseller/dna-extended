@@ -52,18 +52,24 @@ if (!isset($_page_db->value)) {
 }
 #endregion
 
+
+
 $a = new DNA($settings['API_UserName'], $settings['API_Password']);
 
 
-
-
-$list = $a->GetList([
+$query = [
     'OrderColumn'    => 'Id',
     'OrderDirection' => 'ASC',
     'PageNumber'     => $_page,
     'PageSize'       => $page_limit,
-]);
+];
 
+
+
+$list = $a->GetList($query);
+
+$result['query'] = $query;
+$result['domaincount'] = count($list['data']['Domains']);
 
 
 if ($list['TotalCount'] > $page_limit) {
@@ -80,6 +86,7 @@ if ($list['TotalCount'] > $page_limit) {
 Capsule::table('tblconfiguration')
        ->where('setting', 'DNADomainSyncLastPage')
        ->update(['value' => $_page]);
+
 
 
 foreach ($list['data']['Domains'] as $k => $v) {
@@ -105,4 +112,4 @@ foreach ($list['data']['Domains'] as $k => $v) {
 
 }
 
-
+echo json_encode($result);

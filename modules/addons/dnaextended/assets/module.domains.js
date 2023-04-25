@@ -15,24 +15,24 @@ $(document).on('event.domains', function() {
   let zoneslist;
 
   domainstable = $('#domainstable').DataTable({
-    dom           : dt_var.dom,
-    language      : dt_var.language,
-        processing: dt_var.processing,
-        serverSide: dt_var.serverSide,
-    searching     : dt_var.searching,
-        info: dt_var.info,
-        ordering: dt_var.ordering,
-        lengthMenu: dt_var.lengthMenu,
-    ajax          : {
+    dom       : dt_var.dom,
+    language  : dt_var.language,
+    processing: dt_var.processing,
+    serverSide: dt_var.serverSide,
+    searching : dt_var.searching,
+    info      : dt_var.info,
+    ordering  : dt_var.ordering,
+    lengthMenu: dt_var.lengthMenu,
+    ajax      : {
       url : generateUrl('domain.list'),
       type: 'POST',
       data: function(d) {
         d.parameters = post_parameters;
-      }
+      },
     },
-    'order'       : [[0, 'desc']],
-    columns       : [
-      {'data': 'id', 'orderable': false,"width": "20px"},
+    'order'   : [[0, 'desc']],
+    columns   : [
+      {'data': 'id', 'orderable': false, 'width': '20px'},
       {'data': 'domain'},
       {'data': 'status', 'orderable': false},
       {'data': 'id', 'orderable': false},
@@ -156,11 +156,10 @@ $(document).on('event.domains', function() {
     fnInitComplete: function(oSettings, json) {
 
       let selection_buttons = '';
-      selection_buttons += '<a class="btn btn-sm btn-warning btn-quickaction btn-action-inport">Import <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-warning btn-quickaction btn-action-sync">Sync <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-warning btn-quickaction btn-action-contact">Set Contact <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-warning btn-quickaction btn-action-client">Change Client <span class="selectedcount"></span></a> ';
-
+      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-inport"><i class="fa fa-download"></i> Import <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> Sync <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> Set Contact <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> Set NS <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
 
@@ -270,10 +269,66 @@ $(document).on("click",'.btn-action-contact', function(){
 
   if(processing_domains.length>0){
 
+    let _pr = processing_domains[0];
+
+    $.ajax({
+    url     : generateUrl('domain.contact'),
+    type    : 'POST',
+    data    : _pr,
+    dataType: 'json',
+    success : function(data) {
+
+      if(data.contact){
+        if(data.contact.result=='OK'){
+
+          let tab_fields = [
+            'Administrative',
+            'Registrant',
+            'Billing',
+            'Technical',
+          ];
+
+          $.each(tab_fields, function(k, v) {
+
+            let tab_id = v.toLowerCase();
+
+            $('#contacts-'+tab_id+'-'+'firstname').val(data.contact.data.contacts[v]['FirstName']);
+            $('#contacts-'+tab_id+'-'+'lastname').val(data.contact.data.contacts[v]['LastName']);
+            $('#contacts-'+tab_id+'-'+'companyname').val(data.contact.data.contacts[v]['Company']);
+            $('#contacts-'+tab_id+'-'+'phonecountrycode').val(data.contact.data.contacts[v]['Phone']['Phone']['CountryCode']);
+            $('#contacts-'+tab_id+'-'+'phone').val(data.contact.data.contacts[v]['Phone']['Phone']['Number']);
+            $('#contacts-'+tab_id+'-'+'faxcountrycode').val(data.contact.data.contacts[v]['Phone']['Fax']['CountryCode']);
+            $('#contacts-'+tab_id+'-'+'fax').val(data.contact.data.contacts[v]['Phone']['Fax']['Number']);
+            $('#contacts-'+tab_id+'-'+'address1').val(data.contact.data.contacts[v]['Address']['Line1']);
+            $('#contacts-'+tab_id+'-'+'address2').val(data.contact.data.contacts[v]['Address']['Line2']);
+            $('#contacts-'+tab_id+'-'+'address3').val(data.contact.data.contacts[v]['Address']['Line3']);
+            $('#contacts-'+tab_id+'-'+'state').val(data.contact.data.contacts[v]['Address']['State']);
+            $('#contacts-'+tab_id+'-'+'city').val(data.contact.data.contacts[v]['Address']['City']);
+            $('#contacts-'+tab_id+'-'+'country').val(data.contact.data.contacts[v]['Address']['Country']);
+            $('#contacts-'+tab_id+'-'+'zipcode').val(data.contact.data.contacts[v]['Address']['ZipCode']);
+
+
+
+          });
+
+        }
+      }
+
+      $('#modalloadingspinner').remove();
+
+    }
+  });
+
 
   }
 
-  draw_contact_form();
+  let contactform = draw_contact_form();
+
+  $('#generalmodal .modal-title').html('Contacts');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setcontact">Set Contact</button>');
+  $('#generalmodal .modal-body').html(contactform);
+
+  $('#generalmodal').modal('show');
 
 });
 
@@ -433,25 +488,23 @@ function sendAjaxRequests(index) {
 
 }
 
-$(document).on("change",".makesame" ,function() {
+$(document).on('change', '.makesame', function() {
 
   $.each($('.makesame'), function(k, v) {
 
-    let tabid=$(v).attr('data-tabid');
+    let tabid = $(v).attr('data-tabid');
 
-    if($(v).is(':checked')) {
-
-      $('.tabset-'+tabid).addClass('disabled');
-      $('.tabset-'+tabid).find('a').attr('data-toggle', 'ssss');
-
+    if ($(v).is(':checked')) {
+      $('.tabset-' + tabid).addClass('disabled');
+      $('.tabset-' + tabid).find('a').attr('data-toggle', 'ssss');
+      $('.form-contact-tab-' + tabid).attr('required', false);
     } else {
-      $('.tabset-'+tabid).removeClass('disabled');
-      $('.tabset-'+tabid).find('a').attr('data-toggle', 'tab');
+      $('.tabset-' + tabid).removeClass('disabled');
+      $('.tabset-' + tabid).find('a').attr('data-toggle', 'tab');
+      $('.form-contact-tab-' + tabid).attr('required', 'required');
     }
-     $('.tabset-registrant').find('a').click()
 
-
-    console.log(tabid);
+    $('.tabset-registrant').find('a').click();
 
   });
 
@@ -465,28 +518,29 @@ function draw_contact_form() {
     'Administrative',
     'Billing',
     'Technical',
-
   ];
 
   let tab_inputs = [
-     'First Name	',
-     'Last Name	',
-     'Company Name	',
-     'Phone Country Code	',
-     'Phone	',
+     'First Name',
+     'Last Name',
+     'Company Name',
+     'Phone Country Code',
+     'Phone',
      'Fax Country Code',
-     'Fax	',
-     'Address 1	',
-     'Address 2	',
-     'Address 3	',
-     'State	',
-     'City	',
-     'Country	',
-     'ZIP Code	',
+     'Fax',
+     'Address 1',
+     'Address 2',
+     'Address 3',
+     'State',
+     'City',
+     'Country',
+     'ZIP Code',
   ];
 
-// Form HTML generation
-  let formHtml = '<form>';
+
+  let formHtml = '<div id="modalloadingspinner"> <i class="fa fa-spinner fa-spin fa-3x" ></i> </div>';
+  formHtml += '<form id="contactform">'
+  formHtml += '<input type="hidden" name="action" value="addcontact">';
   formHtml += '<ul class="nav nav-tabs">';
   tab_fields.forEach((tab, index) => {
     let activeClass = index === 0 ? 'active' : '';
@@ -505,9 +559,9 @@ function draw_contact_form() {
 
       let field_id = input;
       field_id = field_id.toLowerCase();
-      field_id = field_id.replace(' ', '');
+      field_id = field_id.replaceAll(' ', '');
 
-      formHtml += `<label class="col-md-3 control-label" style="padding: 5px;" for="textinput">${input}</label> <div class="col-md-9" style="padding: 5px;"><input type="text" name="contacts[${tab_id}][${field_id}]" class="form-control"></div> <div class="clearfix"></div>`;
+      formHtml += `<label class="col-md-3 control-label" style="padding: 5px;" for="textinput">${input}</label> <div class="col-md-9" style="padding: 5px;"><input type="text" name="contacts[${tab_id}][${field_id}]" id="contacts-${tab_id}-${field_id}" class="form-control form-contact-tab-${tab_id}" required></div> <div class="clearfix"></div>`;
     });
     formHtml += '</div></div>';
   });
@@ -518,137 +572,63 @@ formHtml += '<div class="col-md-4"> ';
     let tab_id = tab.toLowerCase();
     let samewith = index === 0
         ? ''
-        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" name="checkboxes" id="checkboxes-${index}" class="makesame" name="same[]" value="${tab_id}" data-tabid="${tab_id}">Make ${tab} values same with "Registrant" </label><br>`;
+        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">Make ${tab} values same with "Registrant" </label><br>`;
     formHtml += `${samewith} `;
   });
+
   formHtml += '</div></div>';
 
   formHtml += '<div class="clearfix"></form>';
 
-  $('#generalmodal .modal-body').html(formHtml);
-
-  $('#generalmodal').modal('show');
+  return formHtml;
 
 }
 
 
 
+$(document).on("click",'#setcontact', function(){
+
+  $('#setcontact').button('loading');
+  if ($("#contactform")[0].checkValidity() || 1==1){
 
 
+    $('#contactform').prepend('<div id="alert-loading" class="alert alert-info"><fa class="fa fa-spinner fa-spin fa-3x fa-fw"></fa> Loading...</div>');
 
+    let formdata = $('#contactform').serializeArray();
+    formdata.push({name: 'selected_domains', value: processing_domains.map(u => u.domainid).join(',')});//_.pluck(processing_domains,'domainid').join(",")});
 
+    $.ajax({
+      url     : generateUrl('domain.contact'),
+      type    : 'POST',
+      data    : formdata,
+      dataType: 'json',
+      success : function(data) {
+        if (data.status == 'success') {
 
+          message_display(data.message, 'success');
 
+          $('#generalmodal').modal('hide');
+        } else {
+          $('#alert-loading').remove();
+          $('#contactform').prepend('<div class="alert alert-danger">' + data.message + '</div>');
+        }
 
+        $('#setcontact').button('reset');
+      },
+    });
 
-
-
-
-
-
-
-$(document).on('click', '.editprovider', function() {
-  let providerid = $(this).attr('data-id');
-  let provider = $(this).attr('data-provier');
-
-  let _buttons = [
-    {
-      id   : 'testprovider',
-      text : 'Test Et',
-      class: 'yellow',
-    }, {
-      id   : 'applyprovider',
-      text : 'Kaydet',
-      class: 'btn-success apply',
-    },
-  ];
-
-  modalDrawer('provider.detail', {providerid: providerid, submodule: provider},
-      true, _buttons);
-});
-
-$(document).on('change', '#submodule', function() {
-
-  let submodule = $('#submodule option:selected').val();
-  let providerid = $('#providerid').val();
-
-  $.post(generateUrl('provider.detail.partial', 'html'),
-      {submodule: submodule, providerid: providerid}, function(data) {
-
-        $('#modulepreferences').html(data);
-
-      });
-
-});
-
-$(document).on('click', '#applyprovider', function() {
-
-  let parameters = $('#getproviderdetails').serializeArray();
-
-  $.post(generateUrl('provider.save'), parameters, function(data) {
-
-    $('#providerstable').DataTable().ajax.reload();
-
-    $('#' + currentmodalid).modal('toggle');
-
-  }, 'json');
-
-});
-$(document).on('click', '#testprovider', function() {
-
-  let parameters = $('#getproviderdetails').serializeArray();
-
-  $.post(generateUrl('provider.test'), parameters, function(data) {
-
-    if (data.result == 'success') {
-      alert('Ayarlar doğru');
-    }
-    else if (data.result == 'orginatorisnotdefined') {
-      let orgs = data.orginators;
-      alert(
-          'Kullanıcı adı şifreniz doğru fakat başlık bilgisi yanlış. Şu başlıkları kullanabilirsiniz: ' +
-          orgs.join(' , '));
-    }
-    else {
-      alert('Ayarlar Yanlış');
-    }
-
-  }, 'json');
-
-});
-$(document).on('click', '.deleteprovider', function() {
-
-  let providerid = $(this).attr('data-id');
-
-  let r = confirm('Silinsin mi ?');
-  if (r == true) {
-    $.post(generateUrl('provider.delete'), {providerid: providerid},
-        function(data) {
-
-          $('#providerstable').DataTable().ajax.reload();
-
-        }, 'json');
-  }
-  else {
-
+  }else{
+      $("#contactform")[0].reportValidity();
+      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
+      $('#setcontact').button('reset');
   }
 
-});
-$(document).on('click', '.makedefault', function() {
 
-  let providerid = $(this).attr('data-id');
-
-  let r = confirm('Varsayılan yapılsın mı ?');
-  if (r == true) {
-    $.post(generateUrl('provider.makedefault'), {providerid: providerid},
-        function(data) {
-
-          $('#providerstable').DataTable().ajax.reload();
-
-        }, 'json');
-  }
-  else {
-
-  }
 
 });
+
+
+
+
+
+
