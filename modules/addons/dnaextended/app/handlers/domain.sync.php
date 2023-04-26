@@ -24,7 +24,7 @@ $sync = $a->SyncFromRegistry($record->domain);
 $sync = $a->GetDetails($record->domain);
 
 
-$controlleroutput['status'] = $sync['result']=='OK'?'success':'error';
+$controlleroutput['result'] = $sync['result']=='OK'?'success':'error';
 $controlleroutput['message'] = $sync['result']=='OK'?'Domain Synced':$sync['error']['Code'].' - '.$sync['error']['Message'].' - '.$sync['error']['Details'];
 $controlleroutput['sync'] = $sync;
 
