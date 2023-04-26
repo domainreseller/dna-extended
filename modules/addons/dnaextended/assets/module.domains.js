@@ -160,6 +160,7 @@ $(document).on('event.domains', function() {
       selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> Sync <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> Set Contact <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> Set NS <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> Set Lock <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
 
@@ -271,6 +272,25 @@ $(document).on("click",'.btn-action-setns', function(){
   if(processing_domains.length>0){
 
     setns_modal_display();
+
+  }
+
+});
+
+$(document).on("click",'.btn-action-setlock', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     //if($(v).attr('data-user')=='true') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     //}
+  });
+
+  if(processing_domains.length>0){
+
+    setlock_modal_display();
 
   }
 
@@ -439,13 +459,24 @@ $(document).on("click",'#setcontact', function(){
 
 
 });
+
 $(document).on('click', '#setnameservers', function() {
 
   $('#setnameservers').button('loading');
 
   $('.setnsresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
 
-  asyncNSXHR(0);
+  asyncLockXHR(0);
+
+});
+
+$(document).on('click', '#setlockstatus', function() {
+
+  $('#setlockstatus').button('loading');
+
+  $('.setlockresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncLockXHR(0);
 
 });
 
@@ -624,6 +655,27 @@ function setns_modal_display(){
 
 }
 
+function setlock_modal_display(){
+
+
+  $('#generalmodal').modal('show');
+  $('#generalmodal .modal-title').html('Set Locks');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setlockstatus">Set Lock Status</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlocktable"> <thead> <tr><th>Type</th> <th>Lock Status</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+
+
+    $('#setlocktable tbody').append('<tr><td>Privacy Protection</td><td><select name="privacy" class="form-control"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></td></tr>')
+
+    $('#setlocktable tbody').append('<tr><td>Thieft Protection</td><td><select name="thieft" class="form-control"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></td></tr>')
+
+
+  $.each(processing_domains, function(k, v) {
+    $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="setlockresult setlockresult-'+v.domainid+'"></td></tr>')
+  });
+
+
+}
+
 function asyncSyncXHR(index) {
 
   if (index >= processing_domains.length) {
@@ -639,7 +691,7 @@ function asyncSyncXHR(index) {
     dataType: 'json',
     success : function(data) {
 
-      if (data.status == 'success') {
+      if (data.result == 'success') {
         $('.syncid-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
       } else {
         $('.syncid-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
@@ -666,7 +718,7 @@ function asyncContactXHR(index) {
     dataType: 'json',
     success : function(data) {
 
-      if (data.status == 'success') {
+      if (data.result == 'success') {
         $('.setcontactresult-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
       } else {
         $('.setcontactresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
@@ -692,12 +744,38 @@ function asyncNSXHR(index) {
     dataType: 'json',
     success : function(data) {
 
-      if (data.status == 'success') {
+      if (data.result == 'success') {
         $('.setnsresult-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
       } else {
         $('.setnsresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
       }
       asyncNSXHR(index + 1);
+    },
+  });
+
+}
+
+function asyncLockXHR(index) {
+
+  if (index >= processing_domains.length) {
+    $('#setlockstatus').button('reset');
+    return;
+  }
+
+  const domain = processing_domains[index];
+  $.ajax({
+    url     : generateUrl('domain.lock','json',{domainid: domain.domainid}),
+    type    : 'POST',
+    data    : $('#setlockform').serializeArray(),
+    dataType: 'json',
+    success : function(data) {
+
+      if (data.result == 'success') {
+        $('.setlockresult-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
+      } else {
+        $('.setlockresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
+      }
+      asyncLockXHR(index + 1);
     },
   });
 
