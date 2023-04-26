@@ -5,7 +5,7 @@
  * 15.04.2023 23:53
  * Bünyamin AKÇAY <bunyamin@bunyam.in>
  */
-let domainstable;
+let c;
 let post_parameters=[];
 let processing_domains  = [];
 
@@ -256,6 +256,26 @@ $(document).on("click",'.btn-action-sync', function(){
   }
 
 });
+
+$(document).on("click",'.btn-action-setns', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     //if($(v).attr('data-user')=='true') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     //}
+  });
+
+  if(processing_domains.length>0){
+
+    setns_modal_display();
+
+  }
+
+});
+
 $(document).on("click",'.btn-action-contact', function(){
 
   processing_domains= [];
@@ -266,6 +286,10 @@ $(document).on("click",'.btn-action-contact', function(){
        processing_domains.push(_obj);
      }
   });
+
+
+
+  let contactform = draw_contact_form();
 
   if(processing_domains.length>0){
 
@@ -319,16 +343,20 @@ $(document).on("click",'.btn-action-contact', function(){
     }
   });
 
-
   }
 
-  let contactform = draw_contact_form();
 
   $('#generalmodal .modal-title').html('Contacts');
   $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setcontact">Set Contact</button>');
   $('#generalmodal .modal-body').html(contactform);
 
   $('#generalmodal').modal('show');
+
+
+   $.each(processing_domains, function(k, v) {
+    console.log(v.domain);
+    $('#setcontactdomaintable tbody').append('<tr><td>' + v.domain + '</td><td  class="setcontactresult setcontactresult-'+v.domainid+'"></td></tr>');
+  });
 
 });
 
@@ -362,23 +390,143 @@ $(document).on("click",'#importdomains', function(){
 });
 
 $(document).on("click",'#syncdomains', function(){
-
   $('#syncdomains').button('loading');
-
-
   $('.syncing').html('<fa class="fa fa-spinner fa-spin fa-fw syncloading"></fa> Loading...');
-
-
-  //make request with ajax in array async
-
   if (processing_domains.length > 0) {
-
-
-    // İlk isteği gönder
-    sendAjaxRequests(0);
+    asyncSyncXHR(0);
   }
 
 });
+
+$(document).on('change', '.makesame', function() {
+
+  $.each($('.makesame'), function(k, v) {
+
+    let tabid = $(v).attr('data-tabid');
+
+    if ($(v).is(':checked')) {
+      $('.tabset-' + tabid).addClass('disabled');
+      $('.tabset-' + tabid).find('a').attr('data-toggle', 'ssss');
+      //$('.form-contact-tab-' + tabid).attr('required', false);
+    } else {
+      $('.tabset-' + tabid).removeClass('disabled');
+      $('.tabset-' + tabid).find('a').attr('data-toggle', 'tab');
+      //$('.form-contact-tab-' + tabid).attr('required', 'required');
+    }
+
+    $('.tabset-registrant').find('a').click();
+
+  });
+
+});
+
+
+$(document).on("click",'#setcontact', function(){
+
+  $('#setcontact').button('loading');
+  if ($("#contactform")[0].checkValidity() ){
+
+      $('.setcontactresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+      asyncContactXHR(0);
+
+  }else{
+      $("#contactform")[0].reportValidity();
+      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
+      $('#setcontact').button('reset');
+  }
+
+
+
+});
+$(document).on('click', '#setnameservers', function() {
+
+  $('#setnameservers').button('loading');
+
+  $('.setnsresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncNSXHR(0);
+
+});
+
+function draw_contact_form() {
+
+
+  let tab_fields = [
+    'Registrant',
+    'Administrative',
+    'Billing',
+    'Technical',
+  ];
+
+  let tab_inputs = [
+     'First Name',
+     'Last Name',
+     'Company Name',
+     'Phone Country Code',
+     'Phone',
+     'Fax Country Code',
+     'Fax',
+     'Address 1',
+     'Address 2',
+     'Address 3',
+     'State',
+     'City',
+     'Country',
+     'ZIP Code',
+  ];
+
+
+  let formHtml = '<div id="modalloadingspinner"> <i class="fa fa-spinner fa-spin fa-3x" ></i> </div>';
+  formHtml += '<form id="contactform">'
+  formHtml += '<input type="hidden" name="action" value="addcontact">';
+  formHtml += '<ul class="nav nav-tabs">';
+  tab_fields.forEach((tab, index) => {
+    let activeClass = index === 0 ? 'active' : '';
+    let tab_id = tab.toLowerCase();
+    activeClass += ` tabset-${tab_id}`;
+    formHtml += `<li class="${activeClass}"><a data-toggle="tab" href="#${tab_id}">${tab}</a> </li>`;
+  });
+  formHtml += '</ul>';
+  formHtml += '<div class="tab-content col-md-8"> ';
+  tab_fields.forEach((tab, index) => {
+    let activeClass = index === 0 ? 'active' : '';
+    let tab_id = tab.toLowerCase();
+    formHtml += `<div id="${tab_id}" class="tab-pane fade in ${activeClass}"><br>`;
+    formHtml += '<div class="form-group">';
+    tab_inputs.forEach(input => {
+
+      let field_id = input;
+      field_id = field_id.toLowerCase();
+      field_id = field_id.replaceAll(' ', '');
+
+      formHtml += `<label class="col-md-3 control-label" style="padding: 5px;" for="textinput">${input}</label> <div class="col-md-9" style="padding: 5px;"><input type="text" name="contacts[${tab_id}][${field_id}]" id="contacts-${tab_id}-${field_id}" class="form-control form-contact-tab-${tab_id}" ></div> <div class="clearfix"></div>`;
+    });
+    formHtml += '</div></div>';
+  });
+  formHtml += '</div> ';
+
+formHtml += '<div class="col-md-4"> ';
+formHtml += '<div class="table-container setcstblcontainer"> <table class="table table-striped table-bordered table-hover" id="setcontactdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div>';
+
+
+
+
+  tab_fields.forEach((tab, index) => {
+    let tab_id = tab.toLowerCase();
+    let samewith = index === 0
+        ? ''
+        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">Make ${tab} values same with "Registrant" </label><br>`;
+    formHtml += `${samewith} `;
+  });
+
+  formHtml += '</div></div>';
+
+  formHtml += '<div class="clearfix"></form>';
+
+  return formHtml;
+
+}
 
 function message_display(_message, _type) {
 
@@ -455,16 +603,30 @@ function sync_modal_display(){
   });
 
 
+}
+
+function setns_modal_display(){
+
+
+  $('#generalmodal').modal('show');
+  $('#generalmodal .modal-title').html('Set Nameserver');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setnameservers">Set Nameservers</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setnsform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnstable"> <thead> <tr> <th></th> <th>NS</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnsdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+
+  $.each([1,2,3,4,5], function(k, v) {
+    $('#setnstable tbody').append('<tr><td>NS'+v+'</td><td><input name="ns['+v+']" class="form-control"></td></tr>')
+  });
+
+  $.each(processing_domains, function(k, v) {
+    $('#setnsdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="setnsresult setnsresult-'+v.domainid+'"></td></tr>')
+  });
 
 
 }
 
-// processing_domains dizisindeki her bir öğe için bir Ajax isteği at
-function sendAjaxRequests(index) {
+function asyncSyncXHR(index) {
 
   if (index >= processing_domains.length) {
-    // Tüm istekler tamamlandı
-    console.log('Tüm istekler tamamlandı');
     $('#syncdomains').button('reset');
     return;
   }
@@ -482,150 +644,64 @@ function sendAjaxRequests(index) {
       } else {
         $('.syncid-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
       }
-      sendAjaxRequests(index + 1);
+      asyncSyncXHR(index + 1);
     },
   });
 
 }
 
-$(document).on('change', '.makesame', function() {
 
-  $.each($('.makesame'), function(k, v) {
+function asyncContactXHR(index) {
 
-    let tabid = $(v).attr('data-tabid');
+  if (index >= processing_domains.length) {
+    $('#setcontact').button('reset');
+    return;
+  }
 
-    if ($(v).is(':checked')) {
-      $('.tabset-' + tabid).addClass('disabled');
-      $('.tabset-' + tabid).find('a').attr('data-toggle', 'ssss');
-      $('.form-contact-tab-' + tabid).attr('required', false);
-    } else {
-      $('.tabset-' + tabid).removeClass('disabled');
-      $('.tabset-' + tabid).find('a').attr('data-toggle', 'tab');
-      $('.form-contact-tab-' + tabid).attr('required', 'required');
-    }
+  const domain = processing_domains[index];
+  $.ajax({
+    url     : generateUrl('domain.contact','json',{domainid: domain.domainid}),
+    type    : 'POST',
+    data    : $('#contactform').serializeArray(),
+    dataType: 'json',
+    success : function(data) {
 
-    $('.tabset-registrant').find('a').click();
-
+      if (data.status == 'success') {
+        $('.setcontactresult-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
+      } else {
+        $('.setcontactresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
+      }
+      asyncContactXHR(index + 1);
+    },
   });
-
-});
-
-function draw_contact_form() {
-
-
-  let tab_fields = [
-    'Registrant',
-    'Administrative',
-    'Billing',
-    'Technical',
-  ];
-
-  let tab_inputs = [
-     'First Name',
-     'Last Name',
-     'Company Name',
-     'Phone Country Code',
-     'Phone',
-     'Fax Country Code',
-     'Fax',
-     'Address 1',
-     'Address 2',
-     'Address 3',
-     'State',
-     'City',
-     'Country',
-     'ZIP Code',
-  ];
-
-
-  let formHtml = '<div id="modalloadingspinner"> <i class="fa fa-spinner fa-spin fa-3x" ></i> </div>';
-  formHtml += '<form id="contactform">'
-  formHtml += '<input type="hidden" name="action" value="addcontact">';
-  formHtml += '<ul class="nav nav-tabs">';
-  tab_fields.forEach((tab, index) => {
-    let activeClass = index === 0 ? 'active' : '';
-    let tab_id = tab.toLowerCase();
-    activeClass += ` tabset-${tab_id}`;
-    formHtml += `<li class="${activeClass}"><a data-toggle="tab" href="#${tab_id}">${tab}</a> </li>`;
-  });
-  formHtml += '</ul>';
-  formHtml += '<div class="tab-content col-md-8"> ';
-  tab_fields.forEach((tab, index) => {
-    let activeClass = index === 0 ? 'active' : '';
-    let tab_id = tab.toLowerCase();
-    formHtml += `<div id="${tab_id}" class="tab-pane fade in ${activeClass}"><br>`;
-    formHtml += '<div class="form-group">';
-    tab_inputs.forEach(input => {
-
-      let field_id = input;
-      field_id = field_id.toLowerCase();
-      field_id = field_id.replaceAll(' ', '');
-
-      formHtml += `<label class="col-md-3 control-label" style="padding: 5px;" for="textinput">${input}</label> <div class="col-md-9" style="padding: 5px;"><input type="text" name="contacts[${tab_id}][${field_id}]" id="contacts-${tab_id}-${field_id}" class="form-control form-contact-tab-${tab_id}" required></div> <div class="clearfix"></div>`;
-    });
-    formHtml += '</div></div>';
-  });
-  formHtml += '</div> ';
-
-formHtml += '<div class="col-md-4"> ';
-  tab_fields.forEach((tab, index) => {
-    let tab_id = tab.toLowerCase();
-    let samewith = index === 0
-        ? ''
-        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">Make ${tab} values same with "Registrant" </label><br>`;
-    formHtml += `${samewith} `;
-  });
-
-  formHtml += '</div></div>';
-
-  formHtml += '<div class="clearfix"></form>';
-
-  return formHtml;
 
 }
 
+function asyncNSXHR(index) {
 
-
-$(document).on("click",'#setcontact', function(){
-
-  $('#setcontact').button('loading');
-  if ($("#contactform")[0].checkValidity() || 1==1){
-
-
-    $('#contactform').prepend('<div id="alert-loading" class="alert alert-info"><fa class="fa fa-spinner fa-spin fa-3x fa-fw"></fa> Loading...</div>');
-
-    let formdata = $('#contactform').serializeArray();
-    formdata.push({name: 'selected_domains', value: processing_domains.map(u => u.domainid).join(',')});//_.pluck(processing_domains,'domainid').join(",")});
-
-    $.ajax({
-      url     : generateUrl('domain.contact'),
-      type    : 'POST',
-      data    : formdata,
-      dataType: 'json',
-      success : function(data) {
-        if (data.status == 'success') {
-
-          message_display(data.message, 'success');
-
-          $('#generalmodal').modal('hide');
-        } else {
-          $('#alert-loading').remove();
-          $('#contactform').prepend('<div class="alert alert-danger">' + data.message + '</div>');
-        }
-
-        $('#setcontact').button('reset');
-      },
-    });
-
-  }else{
-      $("#contactform")[0].reportValidity();
-      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
-      $('#setcontact').button('reset');
+  if (index >= processing_domains.length) {
+    $('#setnameservers').button('reset');
+    return;
   }
 
+  const domain = processing_domains[index];
+  $.ajax({
+    url     : generateUrl('domain.nameserver','json',{domainid: domain.domainid}),
+    type    : 'POST',
+    data    : $('#setnsform').serializeArray(),
+    dataType: 'json',
+    success : function(data) {
 
+      if (data.status == 'success') {
+        $('.setnsresult-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
+      } else {
+        $('.setnsresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
+      }
+      asyncNSXHR(index + 1);
+    },
+  });
 
-});
+}
 
 
 
