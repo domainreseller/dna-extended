@@ -5,7 +5,7 @@
  * 15.04.2023 23:53
  * Bünyamin AKÇAY <bunyamin@bunyam.in>
  */
-let c;
+let domainstable;
 let post_parameters=[];
 let processing_domains  = [];
 
@@ -42,25 +42,28 @@ $(document).on('event.domains', function() {
     createdRow    : function(row, data, index) {
 
 
-      let _check = '<input type="checkbox" class="checkboxes cb-quick-action" name="domainids[]" value="' + data.id + '" data-domain="'+data.domain+'" data-dna="'+data.statuses.assigned_to_domainnameapi+'" data-expiry="'+data.statuses.equal_expirydate+'" data-user="'+data.statuses.assigned_to_user+'" data-assigned="'+data.statuses.assigned_to_domain+'"/>';
+      let _check = '<input type="checkbox" class="checkboxes cb-quick-action" name="domainids[]" value="' + data.id + '" data-domain="'+data.domain+'" data-status="'+data.status+'" data-dna="'+data.statuses.assigned_to_domainnameapi+'" data-expiry="'+data.statuses.equal_expirydate+'" data-user="'+data.statuses.assigned_to_user+'" data-assigned="'+data.statuses.assigned_to_domain+'"/>';
       $('td', row).eq(0).html(_check);
 
       let _statuscode = '';
       switch (data.status) {
         case 'Active':
-          _statuscode='success';
+          _statuscode = 'success';
           break;
         case 'WaitingForIncomingTransfer':
-          _statuscode='warning';
+          _statuscode = 'warning';
           break;
         case 'WaitingForOutgoingTransfer':
-          _statuscode='danger';
+          _statuscode = 'danger';
           break;
         case 'PendingDelete':
-          _statuscode='info';
+          _statuscode = 'info';
           break;
         case 'Deleted':
-          _statuscode='danger';
+          _statuscode = 'danger';
+          break;
+        default :
+          _statuscode = 'default';
           break;
       }
 
@@ -156,11 +159,14 @@ $(document).on('event.domains', function() {
     fnInitComplete: function(oSettings, json) {
 
       let selection_buttons = '';
-      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-inport"><i class="fa fa-download"></i> Import <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> Sync <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> Set Contact <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> Set NS <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> Set Lock <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-inport"><i class="fa fa-download"></i> Import <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> Sync <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> Set Contact <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> Set NS <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> Set Lock <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-approveout"><i class="fa fa-mail-forward"></i> Approve Out. Tr. <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> Reject Out. Tr. <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-cancelin"><i class="fa fa-ban"></i> Cancel Inc. Tr. <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
 
@@ -199,22 +205,73 @@ $(document).on('event.domains', function() {
 
 });
 
-
-
+//Checkboxes checked events
 $(document).on("change",".cb-quick-action" ,function() {
 
   let _count = $('.cb-quick-action:checked').length;
-  $('.selectedcount').html('('+_count+')');
 
-  if(_count>0) {
+  let _importable_count   = $('.cb-quick-action:checked[data-user="false"]').length;
+  let _syncable_count     = $('.cb-quick-action:checked[data-user="true"]').length;
+  let _actived_count    = $('.cb-quick-action:checked').length;
+  let _outable_count  = $('.cb-quick-action:checked[data-status="WaitingForOutgoingTransfer"]').length;
+  let _incoming_count  = $('.cb-quick-action:checked[data-status="WaitingForIncomingTransfer"]').length;
+
+  $('.btn-action-inport span.selectedcount').html('('+_importable_count+')');
+  $('.btn-action-sync span.selectedcount').html('('+_syncable_count+')');
+  $('.btn-action-contact span.selectedcount').html('('+_actived_count+')');
+  $('.btn-action-setns span.selectedcount').html('('+_actived_count+')');
+  $('.btn-action-setlock span.selectedcount').html('('+_actived_count+')');
+  $('.btn-action-approveout span.selectedcount').html('('+_outable_count+')');
+  $('.btn-action-rejectout span.selectedcount').html('('+_outable_count+')');
+  $('.btn-action-cancelin span.selectedcount').html('('+_incoming_count+')');
+
+  if (_count > 0) {
     $('.btn-quickaction').show();
-  }else{
+  } else {
     $('.btn-quickaction').hide();
   }
 
+  if (_importable_count == 0) {
+    $('.btn-action-inport').hide();
+  } else {
+    $('.btn-action-inport').show();
+  }
+
+  if (_syncable_count == 0) {
+    $('.btn-action-sync').hide();
+  } else {
+    $('.btn-action-sync').show();
+  }
+
+  if (_actived_count == 0) {
+    $('.btn-action-setns').hide();
+    $('.btn-action-setlock').hide();
+    $('.btn-action-contact').hide();
+  } else {
+    $('.btn-action-setns').show();
+    $('.btn-action-setlock').show();
+    $('.btn-action-contact').show();
+  }
+
+  if (_outable_count == 0) {
+    $('.btn-action-approveout').hide();
+    $('.btn-action-rejectout').hide();
+  } else {
+    $('.btn-action-approveout').show();
+    $('.btn-action-rejectout').show();
+  }
+
+  if (_incoming_count == 0) {
+    $('.btn-action-cancelin').hide();
+  } else {
+    $('.btn-action-cancelin').show();
+  }
+
+
+
 });
 
-
+//Import Modal
 $(document).on("click",'.btn-action-inport', function(){
 
   processing_domains= [];
@@ -239,6 +296,7 @@ $(document).on("click",'.btn-action-inport', function(){
 
 });
 
+//Sync Modal
 $(document).on("click",'.btn-action-sync', function(){
 
   processing_domains= [];
@@ -258,6 +316,7 @@ $(document).on("click",'.btn-action-sync', function(){
 
 });
 
+//Set Nameserver Modal
 $(document).on("click",'.btn-action-setns', function(){
 
   processing_domains= [];
@@ -277,6 +336,7 @@ $(document).on("click",'.btn-action-setns', function(){
 
 });
 
+//Set Lock Modal
 $(document).on("click",'.btn-action-setlock', function(){
 
   processing_domains= [];
@@ -296,6 +356,7 @@ $(document).on("click",'.btn-action-setlock', function(){
 
 });
 
+//Set Contact Modal
 $(document).on("click",'.btn-action-contact', function(){
 
   processing_domains= [];
@@ -380,6 +441,8 @@ $(document).on("click",'.btn-action-contact', function(){
 
 });
 
+
+//Modal Button Import
 $(document).on("click",'#importdomains', function(){
 
   let _formdata = $('#importform').serializeArray();
@@ -409,6 +472,7 @@ $(document).on("click",'#importdomains', function(){
 
 });
 
+//Modal Button Sync
 $(document).on("click",'#syncdomains', function(){
   $('#syncdomains').button('loading');
   $('.syncing').html('<fa class="fa fa-spinner fa-spin fa-fw syncloading"></fa> Loading...');
@@ -418,6 +482,49 @@ $(document).on("click",'#syncdomains', function(){
 
 });
 
+//Modal Button Set Contact
+$(document).on("click",'#setcontact', function(){
+
+  $('#setcontact').button('loading');
+  if ($("#contactform")[0].checkValidity() ){
+
+      $('.setcontactresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+      asyncContactXHR(0);
+
+  }else{
+      $("#contactform")[0].reportValidity();
+      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
+      $('#setcontact').button('reset');
+  }
+
+
+
+});
+
+//Modal Button Set Nameservers
+$(document).on('click', '#setnameservers', function() {
+
+  $('#setnameservers').button('loading');
+
+  $('.setnsresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncLockXHR(0);
+
+});
+
+//Modal Button Set Lock Status
+$(document).on('click', '#setlockstatus', function() {
+
+  $('#setlockstatus').button('loading');
+
+  $('.setlockresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncLockXHR(0);
+
+});
+
+//Modal Button Contact Modal Set same with registrar
 $(document).on('change', '.makesame', function() {
 
   $.each($('.makesame'), function(k, v) {
@@ -441,45 +548,7 @@ $(document).on('change', '.makesame', function() {
 });
 
 
-$(document).on("click",'#setcontact', function(){
-
-  $('#setcontact').button('loading');
-  if ($("#contactform")[0].checkValidity() ){
-
-      $('.setcontactresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
-
-      asyncContactXHR(0);
-
-  }else{
-      $("#contactform")[0].reportValidity();
-      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
-      $('#setcontact').button('reset');
-  }
-
-
-
-});
-
-$(document).on('click', '#setnameservers', function() {
-
-  $('#setnameservers').button('loading');
-
-  $('.setnsresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
-
-  asyncLockXHR(0);
-
-});
-
-$(document).on('click', '#setlockstatus', function() {
-
-  $('#setlockstatus').button('loading');
-
-  $('.setlockresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
-
-  asyncLockXHR(0);
-
-});
-
+//Modal Draw Contact Form
 function draw_contact_form() {
 
 
@@ -559,17 +628,7 @@ formHtml += '<div class="table-container setcstblcontainer"> <table class="table
 
 }
 
-function message_display(_message, _type) {
-
-  let _alert_id = 'alert-' + Math.floor(Math.random() * 1000000);
-  $('#modulebody').prepend('<div id="' + _alert_id + '" class="alert alert-' + _type + '">' + _message + '</div>');
-
-  setTimeout(function() {
-    $('#' + _alert_id).fadeOut(500);
-  }, 10000);
-
-}
-
+//Modal Draw Import Form
 function import_modal_display(){
 
 
@@ -609,7 +668,7 @@ function import_modal_display(){
                                 'icon': 'icon-person',
                                 'subtext': curr.companyname
                             },
-                            'disabled': false
+                          'disabled': false
                         }
                     );
                 }
@@ -621,6 +680,7 @@ function import_modal_display(){
 
 }
 
+//Modal Draw Sync Form
 function sync_modal_display(){
 
 
@@ -636,6 +696,7 @@ function sync_modal_display(){
 
 }
 
+//Modal Draw Set Nameserver Form
 function setns_modal_display(){
 
 
@@ -655,6 +716,7 @@ function setns_modal_display(){
 
 }
 
+//Modal Draw Set Nameserver Form
 function setlock_modal_display(){
 
 
@@ -676,6 +738,7 @@ function setlock_modal_display(){
 
 }
 
+//Async Request Sync
 function asyncSyncXHR(index) {
 
   if (index >= processing_domains.length) {
@@ -702,7 +765,7 @@ function asyncSyncXHR(index) {
 
 }
 
-
+//Async function to set contact
 function asyncContactXHR(index) {
 
   if (index >= processing_domains.length) {
@@ -729,6 +792,7 @@ function asyncContactXHR(index) {
 
 }
 
+//Async function to set nameservers
 function asyncNSXHR(index) {
 
   if (index >= processing_domains.length) {
@@ -755,6 +819,7 @@ function asyncNSXHR(index) {
 
 }
 
+//Async function to set lock status
 function asyncLockXHR(index) {
 
   if (index >= processing_domains.length) {
@@ -778,6 +843,18 @@ function asyncLockXHR(index) {
       asyncLockXHR(index + 1);
     },
   });
+
+}
+
+//Display main status message
+function message_display(_message, _type) {
+
+  let _alert_id = 'alert-' + Math.floor(Math.random() * 1000000);
+  $('#modulebody').prepend('<div id="' + _alert_id + '" class="alert alert-' + _type + '">' + _message + '</div>');
+
+  setTimeout(function() {
+    $('#' + _alert_id).fadeOut(500);
+  }, 10000);
 
 }
 
