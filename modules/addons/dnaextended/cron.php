@@ -53,7 +53,6 @@ if (!isset($_page_db->value)) {
 #endregion
 
 
-
 $a = new DNA($settings['API_UserName'], $settings['API_Password']);
 
 
