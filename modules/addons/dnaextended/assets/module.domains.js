@@ -41,8 +41,14 @@ $(document).on('event.domains', function() {
 
     createdRow    : function(row, data, index) {
 
+      let _active_type = 'false';
+      if(data.status=='WaitingForOutgoingTransfer' || data.status=='WaitingForIncomingTransfer'){
+        _active_type = 'false';
+      }else{
+        _active_type = 'true';
+      }
 
-      let _check = '<input type="checkbox" class="checkboxes cb-quick-action" name="domainids[]" value="' + data.id + '" data-domain="'+data.domain+'" data-status="'+data.status+'" data-dna="'+data.statuses.assigned_to_domainnameapi+'" data-expiry="'+data.statuses.equal_expirydate+'" data-user="'+data.statuses.assigned_to_user+'" data-assigned="'+data.statuses.assigned_to_domain+'"/>';
+      let _check = '<input type="checkbox" class="checkboxes cb-quick-action" name="domainids[]" value="' + data.id + '" data-active="'+_active_type+'" data-domain="'+data.domain+'" data-status="'+data.status+'" data-dna="'+data.statuses.assigned_to_domainnameapi+'" data-expiry="'+data.statuses.equal_expirydate+'" data-user="'+data.statuses.assigned_to_user+'" data-assigned="'+data.statuses.assigned_to_domain+'"/>';
       $('td', row).eq(0).html(_check);
 
       let _statuscode = '';
@@ -212,9 +218,11 @@ $(document).on("change",".cb-quick-action" ,function() {
 
   let _importable_count   = $('.cb-quick-action:checked[data-user="false"]').length;
   let _syncable_count     = $('.cb-quick-action:checked[data-user="true"]').length;
-  let _actived_count    = $('.cb-quick-action:checked').length;
-  let _outable_count  = $('.cb-quick-action:checked[data-status="WaitingForOutgoingTransfer"]').length;
-  let _incoming_count  = $('.cb-quick-action:checked[data-status="WaitingForIncomingTransfer"]').length;
+  let _actived_count      = $('.cb-quick-action:checked[data-active="true"]').length;
+  let _outable_count      = $('.cb-quick-action:checked[data-status="WaitingForOutgoingTransfer"]').length;
+  let _incoming_count     = $('.cb-quick-action:checked[data-status="WaitingForIncomingTransfer"]').length;
+
+
 
   $('.btn-action-inport span.selectedcount').html('('+_importable_count+')');
   $('.btn-action-sync span.selectedcount').html('('+_syncable_count+')');
@@ -322,35 +330,15 @@ $(document).on("click",'.btn-action-setns', function(){
   processing_domains= [];
 
   $.each($('.cb-quick-action:checked'), function(k, v) {
-     //if($(v).attr('data-user')=='true') {
+     if($(v).attr('data-active')=='true') {
        let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
        processing_domains.push(_obj);
-     //}
+     }
   });
 
   if(processing_domains.length>0){
 
     setns_modal_display();
-
-  }
-
-});
-
-//Set Lock Modal
-$(document).on("click",'.btn-action-setlock', function(){
-
-  processing_domains= [];
-
-  $.each($('.cb-quick-action:checked'), function(k, v) {
-     //if($(v).attr('data-user')=='true') {
-       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
-       processing_domains.push(_obj);
-     //}
-  });
-
-  if(processing_domains.length>0){
-
-    setlock_modal_display();
 
   }
 
@@ -362,7 +350,7 @@ $(document).on("click",'.btn-action-contact', function(){
   processing_domains= [];
 
   $.each($('.cb-quick-action:checked'), function(k, v) {
-     if($(v).attr('data-user')=='true') {
+     if($(v).attr('data-active')=='true') {
        let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
        processing_domains.push(_obj);
      }
@@ -440,6 +428,81 @@ $(document).on("click",'.btn-action-contact', function(){
   });
 
 });
+
+//Set Lock Modal
+$(document).on("click",'.btn-action-setlock', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     if($(v).attr('data-active')=='true') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     }
+  });
+
+  if(processing_domains.length>0){
+
+    setlock_modal_display();
+
+  }
+
+});
+
+//Set CancelIncTransfer Modal
+$(document).on("click",'.btn-action-cancelin', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     if($(v).attr('data-status')=='WaitingForIncomingTransfer') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     }
+  });
+
+  if(processing_domains.length>0){
+    cancelinctransfer_modal_display();
+  }
+
+});
+
+//Set RejectOutTransfer Modal
+$(document).on("click",'.btn-action-rejectout', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     if($(v).attr('data-status')=='WaitingForOutgoingTransfer') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     }
+  });
+
+  if(processing_domains.length>0){
+    rejectouttransfer_modal_display();
+  }
+
+});
+
+//Set ApproveOutTransfer Modal
+$(document).on("click",'.btn-action-approveout', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     if($(v).attr('data-status')=='WaitingForOutgoingTransfer') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     }
+  });
+
+  if(processing_domains.length>0){
+    approveouttransfer_modal_display();
+  }
+
+});
+
 
 
 //Modal Button Import
@@ -521,6 +584,38 @@ $(document).on('click', '#setlockstatus', function() {
   $('.setlockresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
 
   asyncLockXHR(0);
+
+});
+
+//Modal Button Set Lock Status
+$(document).on('click', '#cancelinctransfer', function() {
+
+  $('#cancelinctransfer').button('loading');
+
+  $('.transfergeneral').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncTransferXHR(0, 'cancel');
+
+});
+
+//Modal Button Set Reject Outgoing Transfer
+$(document).on('click', '#rejectouttransfer', function() {
+
+  $('#rejectouttransfer').button('loading');
+
+  $('.transfergeneral').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncTransferXHR(0, 'reject');
+
+});
+//Modal Button Set Approve Outgoing Transfer
+$(document).on('click', '#approveouttransfer', function() {
+
+  $('#approveouttransfer').button('loading');
+
+  $('.transfergeneral').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
+
+  asyncTransferXHR(0, 'approve');
 
 });
 
@@ -738,6 +833,54 @@ function setlock_modal_display(){
 
 }
 
+//Modal Cancel Incoming Transfer Form
+function cancelinctransfer_modal_display(){
+
+
+  $('#generalmodal').modal('show');
+  $('#generalmodal .modal-title').html('Cancel Incoming Transfer');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="cancelinctransfer">Cancel Incoming Transfer</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These incoming transfers will be cancelled </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+
+  $.each(processing_domains, function(k, v) {
+    $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
+  });
+
+
+}
+
+//Modal Reject Outgoing Transfer Form
+function rejectouttransfer_modal_display(){
+
+
+  $('#generalmodal').modal('show');
+  $('#generalmodal .modal-title').html('Reject outgoing Transfer');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="rejectouttransfer">Reject outgoing Transfer</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These outgoing transfers will be rejected </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+
+  $.each(processing_domains, function(k, v) {
+    $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
+  });
+
+
+}
+
+//Modal Reject Outgoing Transfer Form
+function approveouttransfer_modal_display(){
+
+
+  $('#generalmodal').modal('show');
+  $('#generalmodal .modal-title').html('Approve outgoing Transfer');
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="approveouttransfer">Approve outgoing Transfer</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These outgoing transfers will be approved </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+
+  $.each(processing_domains, function(k, v) {
+    $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
+  });
+
+
+}
+
 //Async Request Sync
 function asyncSyncXHR(index) {
 
@@ -841,6 +984,33 @@ function asyncLockXHR(index) {
         $('.setlockresult-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
       }
       asyncLockXHR(index + 1);
+    },
+  });
+
+}
+
+//Async function to set transfer
+function asyncTransferXHR(index,action) {
+
+  if (index >= processing_domains.length) {
+    $('#setlockstatus').button('reset');
+    return;
+  }
+
+  const domain = processing_domains[index];
+  $.ajax({
+    url     : generateUrl('domain.transfer','json',{domainid: domain.domainid,transferaction:action}),
+    type    : 'POST',
+    data    : $('#setlockform').serializeArray(),
+    dataType: 'json',
+    success : function(data) {
+
+      if (data.result == 'success') {
+        $('.transfergeneral-' + domain.domainid).html('<fa class="fa fa-check text-success"></fa>');
+      } else {
+        $('.transfergeneral-' + domain.domainid).html('<fa class="fa fa-times text-danger"></fa> ' + data.message);
+      }
+      asyncLockXHR(index + 1,action);
     },
   });
 
