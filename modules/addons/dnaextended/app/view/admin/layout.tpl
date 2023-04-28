@@ -22,8 +22,9 @@
 
             </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Balance & Payments</a></li>
+            <ul class="nav navbar-nav navbar-right moduletopbarnav">
+                <li class="active"><a href="#"class="moduleurl" data-target="dashboard" >Dashboard</a></li>
+                <li><a href="#" class="moduleurl" data-target="balance">Balance & Payments</a></li>
                 <li><a href="#" class="moduleurl" data-target="domains">All Domains</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -79,6 +80,7 @@
 <script src="../modules/addons/{$smarty.get.module}/assets/jquery.validate.min.js"></script>
 
 
+<link href="../modules/addons/{$smarty.get.module}/assets/bootstrap.theme.css?v={$version}" rel="stylesheet">
 <link href="../modules/addons/{$smarty.get.module}/assets/module.css?v={$version}" rel="stylesheet">
 <script src="../modules/addons/{$smarty.get.module}/assets/module.js?v={$version}"></script>
 

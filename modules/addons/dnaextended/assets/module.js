@@ -6,11 +6,9 @@
  * Bünyamin AKÇAY <bunyamin@bunyam.in>
  */
 let modulename = $('#module-name').val();
-let loadinghtml = '<div class="container-loading"> <div class="circle-loading"></div></div>';
+let loadinghtml = '<div style="width: 100%; text-align: center; margin-top: 70px;"><span class="module-loader" style="line-height: 100px;">Loading...</span></div>';
 let currentmodalid='';
-let defaultadminpermissions={};
-let defaultadminpermissionstext={};
-let templatelanguages={};
+
 
 let modules = [
     'domains'
@@ -46,7 +44,7 @@ $(document).ready(function () {
             return 0;
         }
 
-        $("ul.moduletab li").removeClass("active");
+        $("ul.moduletopbarnav li").removeClass("active");
         $(this).parent("li").addClass("active");
 
         drawlayout(target, {});

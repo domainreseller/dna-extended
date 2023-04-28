@@ -9,5 +9,5 @@
 
 define('MODULE_DIR',__DIR__.'/../');
 
-require_once MODULE_DIR.'/app/lib/dna.php';
+require_once MODULE_DIR.'/app/lib/DomainNameAPI_PHPLibrary.php';
 
