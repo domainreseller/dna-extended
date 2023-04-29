@@ -11,12 +11,109 @@
 namespace DNA_Extended;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use \DomainNameApi\DomainNameAPI_PHPLibrary as DNA;
 
 require_once 'app.php';
 
 class module {
 
+
+    public function makeSync(){
+
+        $page_limit = 500;
+        $ignore_deleted = false;
+
+        $settings = $this->dnaParameters();
+        if ($settings['DNADomainSyncLastPage']>0){
+            $_page = $settings['DNADomainSyncLastPage'];
+        }else{
+            $_page = 0;
+        }
+
+        if ($settings['DNArecordcount']>0){
+            $page_limit = $settings['DNArecordcount'];
+        }
+        if ($settings['DNAexcludedeleted']>0){
+            $ignore_deleted= true;
+        }
+
+
+        $a = new DNA($settings['API_UserName'], $settings['API_Password']);
+
+        $query = [
+            'OrderColumn'    => 'Id',
+            'OrderDirection' => 'ASC',
+            'PageNumber'     => $_page,
+            'PageSize'       => $page_limit,
+        ];
+
+        $list = $a->GetList($query);
+        $result['query'] = $query;
+        $result['domaincount'] = count($list['data']['Domains']);
+        $result['apiresp'] = $list['result'];
+
+
+        if ($list['TotalCount'] > $page_limit) {
+            if (count($list['data']['Domains']) != 0 && $list['TotalCount'] > 0) {
+                $_page++;
+            } else {
+                $_page = 0;
+            }
+        } else {
+            $_page = 0;
+        }
+
+        $this->setSetting('DNADomainSyncLastPage',$_page);
+
+        foreach ($list['data']['Domains'] as $k => $v) {
+
+            if($ignore_deleted && $v['Status']=='Deleted'){
+                continue;
+            }
+
+            $domain = Capsule::table('tbldomains')
+                             ->where('domain', $v['DomainName'])
+                             ->first();
+
+            $domain_arr = [
+                'reseller'    => $settings['API_UserName'],
+                'domain'      => $v['DomainName'],
+                'status'      => $v['Status'],
+                'expiry_date' => date('Y-m-d', strtotime($v['Dates']['Expiration'])),
+            ];
+
+            $domain_arr['user_id']    = $domain->userid;
+            $domain_arr['domain_id']  = $domain->id;
+            $domain_arr['updated_at'] = date('Y-m-d H:i:s');
+
+
+            Capsule::table('mod_dnaextended_domains')
+                   ->updateOrInsert(['domain' => $v['DomainName']], $domain_arr);
+
+
+        }
+
+        return $result;
+
+    }
+
     #region Util
+
+    public function getSetting($setting) {
+        $result = Capsule::table('tblconfiguration')
+                         ->where('setting', $setting)
+                         ->first();
+
+        return $result->value;
+    }
+
+    public function setSetting($setting, $value) {
+        Capsule::table('tblconfiguration')
+               ->updateOrInsert(
+                   ['setting' => $setting],
+                   ['value'   => $value,'updated_at' => date('Y-m-d H:i:s')]
+               );
+    }
 
     public function dnaParameters() {
         $settings = [];

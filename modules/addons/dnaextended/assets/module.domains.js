@@ -572,7 +572,7 @@ $(document).on('click', '#setnameservers', function() {
 
   $('.setnsresult').html('<fa class="fa fa-spinner fa-spin fa-fw"></fa>');
 
-  asyncLockXHR(0);
+  asyncNSXHR(0);
 
 });
 
@@ -793,7 +793,6 @@ function sync_modal_display(){
 
 //Modal Draw Set Nameserver Form
 function setns_modal_display(){
-
 
   $('#generalmodal').modal('show');
   $('#generalmodal .modal-title').html('Set Nameserver');

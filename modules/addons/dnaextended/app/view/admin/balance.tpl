@@ -21,15 +21,15 @@
 
                                 <tr>
                                     <td>ID</td>
-                                    <td>4</td>
+                                    <td>{$id}</td>
                                 </tr>
                                 <tr>
                                     <td>Name</td>
-                                    <td>Bunyamin LTD Sti</td>
+                                    <td>{$name}</td>
                                 </tr>
                                 <tr>
                                     <td>Status</td>
-                                    <td>Active</td>
+                                    <td>{$active}</td>
                                 </tr>
 
                                 </tbody>
@@ -54,14 +54,14 @@
                                 </thead>
                                 <tbody>
 
-                                <tr>
-                                    <td>USD</td>
-                                    <td class="text-right">5123.3929$</td>
-                                </tr>
-                                <tr>
-                                    <td>TRY</td>
-                                    <td class="text-right">591292.4144₺</td>
-                                </tr>
+                                {foreach from=$balances key=k item=v name=ind}
+                                    <tr>
+                                        <td>{$v.currency}</td>
+                                        <td class="text-right">{$v.balance}{$v.symbol}</td>
+                                    </tr>
+                                {/foreach}
+
+
 
                                 </tbody>
                             </table>
