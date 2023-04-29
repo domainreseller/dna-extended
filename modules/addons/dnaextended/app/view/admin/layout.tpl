@@ -23,10 +23,18 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right moduletopbarnav">
-                <li class="active"><a href="#"class="moduleurl" data-target="dashboard" >Dashboard</a></li>
-                <li><a href="#" class="moduleurl" data-target="balance">Balance & Payments</a></li>
-                <li><a href="#" class="moduleurl" data-target="domains">All Domains</a></li>
-                <li><a href="#" class="moduleurl" data-target="settings">Settings</a></li>
+                <li class="active">
+                    <a href="#"class="moduleurl" data-target="dashboard" >{$_lang.nav_dashboard}</a>
+                </li>
+                <li>
+                    <a href="#" class="moduleurl" data-target="balance">{$_lang.nav_balance}</a>
+                </li>
+                <li>
+                    <a href="#" class="moduleurl" data-target="domains">{$_lang.nav_domains}</a>
+                </li>
+                <li>
+                    <a href="#" class="moduleurl" data-target="settings">{$_lang.nav_settings}</a>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -70,6 +78,32 @@
     warning_equal_expirydate : '{$_lang.warning_equal_expirydate}',
     text_search_client : '{$_lang.text_search_client}',
     syncinfo : '{$_lang.syncinfo}',
+    loading : '{$_lang.loading}',
+    btn_sync : '{$_lang.btn_sync}',
+    btn_contact : '{$_lang.btn_contact}',
+    btn_ns : '{$_lang.btn_ns}',
+    btn_lock : '{$_lang.btn_lock}',
+    btn_approve : '{$_lang.btn_approve}',
+    btn_reject : '{$_lang.btn_reject}',
+    btn_cancel : '{$_lang.btn_cancel}',
+    btn_filter_by_status : '{$_lang.btn_filter_by_status}',
+    domains : '{$_lang.domains}',
+    domain : '{$_lang.domain}',
+    values_with : '{$_lang.values_with}',
+    client : '{$_lang.client}',
+    sync : '{$_lang.sync}',
+    nstxt : '{$_lang.nstxt}',
+    type : '{$_lang.type}',
+    locktype : '{$_lang.locktype}',
+    privacy_protection : '{$_lang.privacy_protection}',
+    thieft_protection : '{$_lang.thieft_protection}',
+    enabled : '{$_lang.enabled}',
+    disabled : '{$_lang.disabled}',
+    cancel_warning : '{$_lang.cancel_warning}',
+    reject_warning : '{$_lang.reject_warning}',
+    approve_warning : '{$_lang.approve_warning}',
+    manually_run_cron : '{$_lang.manually_run_cron}',
+    cron_started : '{$_lang.cron_started}',
   };
 </script>
 

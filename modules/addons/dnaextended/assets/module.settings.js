@@ -27,11 +27,11 @@ $(document).on("click",'#savesettings', function(){
 $(document).on("click",'#runmanualcron', function(){
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Cron Manual');
+  $('#generalmodal .modal-title').html(window._lang.manually_run_cron);
   $('#generalmodal .modal-footer .extrabuttons').html('');
   $('#generalmodal .modal-body').html('<div class=" cronresult" style="min-height: 200px;width: 100%;overflow-x: scroll;background-color: lightgray; margin-left: 1px;">  </div>');
 
-  $('.cronresult').append('<li style="color: green;">Manual Run Cron started</li>');
+  $('.cronresult').append('<li style="color: green;">'+window._lang.cron_started+'</li>');
   $('.cronresult').append('<i class="fa fa-cog fa-spin fa-fw"></i>');
 
   makeSyncRequest()

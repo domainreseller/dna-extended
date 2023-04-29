@@ -1,6 +1,6 @@
 {if $result !='OK' and 1==2}
     <div class="alert alert-warning" role="alert">
-        Ooops! Something went wrong. Error : {$error.Message} {$error.Details}
+        {$_lang.something_went_wrong} Error : {$error.Message} {$error.Details}
     </div>
 {else}
     <div class="row">
@@ -14,21 +14,21 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th colspan="2">Reseller Info</th>
+                                    <th colspan="2">{$_lang.balance_info}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
                                 <tr>
-                                    <td>ID</td>
+                                    <td>{$_lang.balance_info_id}</td>
                                     <td>{$id}</td>
                                 </tr>
                                 <tr>
-                                    <td>Name</td>
+                                    <td>{$_lang.balance_info_name}</td>
                                     <td>{$name}</td>
                                 </tr>
                                 <tr>
-                                    <td>Status</td>
+                                    <td>{$_lang.balance_info_status}</td>
                                     <td>{$active}</td>
                                 </tr>
 
@@ -49,7 +49,7 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th colspan="2">Balance Status</th>
+                                    <th colspan="2">{$_lang.balance_status}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -81,13 +81,13 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th colspan="2">Balance Activity</th>
+                                <th colspan="2">{$_lang.balance_activity}</th>
                             </tr>
                             </thead>
                             <tbody>
 
                             <tr>
-                                <td colspan="2">Balance activity coming soon</td>
+                                <td colspan="2">{$_lang.balance_activity_soon}</td>
                             </tr>
 
 

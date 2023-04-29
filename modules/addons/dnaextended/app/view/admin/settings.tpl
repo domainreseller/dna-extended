@@ -7,13 +7,13 @@
                 <table class="table table-striped">
                     <thead>
                     <trs>
-                        <th colspan="2" class="modheading">Automation settings</th>
+                        <th colspan="2" class="modheading">{$_lang.automation_settings}</th>
                     </trs>
                     </thead>
                     <tbody>
 
                     <tr>
-                        <td>Cron Settings</td>
+                        <td>{$_lang.cron_settings}</td>
                         <td>
                             <code>*/10 * * * * {$cronfile}</code>
 
@@ -21,24 +21,24 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Cron Status</td>
+                        <td>{$_lang.cron_status}</td>
                         <td>
-                            <a href="javascript:void(0)" id="runmanualcron">Run Manually</a> | Last Run : {$latestcron}
+                            <a href="javascript:void(0)" id="runmanualcron">{$_lang.manually_run_cron}</a> | {$_lang.cron_last_run} : {$latestcron}
                         </td>
                     </tr>
                     <tr>
-                        <td>Processing Record</td>
+                        <td>{$_lang.processing_record}</td>
                         <td>
 
                             <div class="input-group" style="max-width: 300px;">
                                 <input id="DNArecordcount" name="DNArecordcount" class="form-control" placeholder="Sync Record count per check" type="number" min="100" max="1500" value="{$settings.DNArecordcount}">
-                                <span class="input-group-addon">records</span>
+                                <span class="input-group-addon">{$_lang.records}</span>
                             </div>
 
                         </td>
                     </tr>
                     <tr>
-                        <td>Exclude Deleted records</td>
+                        <td>{$_lang.exclude_deleted}</td>
                         <td>
                             <input type="checkbox" id="DNAexcludedeleted" name="DNAexcludedeleted" value="1" {if $settings.DNAexcludedeleted eq '1'}checked{/if}>
                         </td>
@@ -49,7 +49,7 @@
 
             </div>
             <div style="text-align: center; margin-bottom: 20px">
-                <a href="javascript:void(0)" id="savesettings" class="btn btn-primary">Save</a>
+                <a href="javascript:void(0)" id="savesettings" class="btn btn-primary">{$_lang.save}</a>
             </div>
         </div>
     </div>

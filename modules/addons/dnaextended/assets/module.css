@@ -28,5 +28,11 @@
     font-size: 20px;
     font-weight: bold;
 }
+.cb-quick-action{
+    scale: 1.2;
+}
+#domainstable tbody td.sorting_1 {
+    text-align: center;
+}
 
 

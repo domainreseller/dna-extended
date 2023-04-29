@@ -30,7 +30,7 @@ $(document).on('event.domains', function() {
         d.parameters = post_parameters;
       },
     },
-    'order'   : [[0, 'desc']],
+    //'order'   : [[0, 'desc']],
     columns   : [
       {'data': 'id', 'orderable': false, 'width': '20px'},
       {'data': 'domain'},
@@ -95,48 +95,79 @@ $(document).on('event.domains', function() {
 
       $('td', row).eq(3).html(_userinfo);
 
-      //region Status
-      //
-      //let _status = '<span class="label label-success">';
-      //if (data.default != 1) {
-        //  _status = '<span class="label label-warning">';
-        //  _status += 'Hayır';
-        //}
-      //else {
-        //  _status += 'Evet';
-        //}
-      //
-      //_status += '</label>';
-      //$('td', row).eq(4).html(_status);
 
-      //endregion
 
-      //region Buttons
+      let _buttons =[];
 
-      let _buttons =
-              [
-                {
-                  id         : 'makedefault',
-                  text       : 'Varsayılan yap',
-                  icon       : 'fa-check',
-                  classes    : 'green btn-outline',
-                  onlydefault: true,
-                },
-                {
-                  id         : 'editprovider',
-                  text       : 'Detaylar',
-                  icon       : 'fa-pencil',
-                  classes    : 'blue-madison btn-outline',
-                  onlydefault: false,
-                },
-                {
-                  id         : 'deleteprovider',
-                  text       : 'Sil',
-                  icon       : 'fa-trash',
-                  classes    : 'red btn-outline',
-                  onlydefault: false,
-                },
-              ];
+      if(data.statuses.assigned_to_user==false){
+        _buttons.push({
+          id         : 'importbtn',
+          text       : window._lang.btn_import,
+          icon       : 'fa-download',
+          classes    : 'btn-outline-primary btn-outline',
+          onlydefault: false,
+        });
+      }
+      if(data.statuses.assigned_to_user==true){
+        _buttons.push({
+          id         : 'syncbtn',
+          text       : window._lang.btn_sync,
+          icon       : 'fa-recycle',
+          classes    : 'btn-outline-success btn-outline',
+          onlydefault: false,
+        });
+      }
+      if(_active_type=='true'){
+        _buttons.push({
+          id         : 'contactbtn',
+          text       : window._lang.btn_contact,
+          icon       : 'fa-calendar',
+          classes    : 'btn-outline-secondary btn-outline',
+          onlydefault: false,
+        });
+        _buttons.push({
+          id         : 'nameserverbtn',
+          text       : window._lang.btn_ns,
+          icon       : 'fa-bars',
+          classes    : 'btn-outline-warning btn-outline',
+          onlydefault: false,
+        });
+        _buttons.push({
+          id         : 'lockbtn',
+          text       : window._lang.btn_lock,
+          icon       : 'fa-lock',
+          classes    : 'btn-outline-info btn-outline',
+          onlydefault: false,
+        });
+      }
+      if(data.status=='WaitingForOutgoingTransfer'){
+        _buttons.push({
+          id         : 'approveoutbtn',
+          text       : window._lang.btn_approve,
+          icon       : 'fa-forward',
+          classes    : 'btn-outline-secondary btn-outline',
+          onlydefault: false,
+        });
+        _buttons.push({
+          id         : 'rejectoutbtn',
+          text       : window._lang.btm_reject,
+          icon       : 'fa-arrow-circle-right',
+          classes    : 'btn-outline-danger btn-outline',
+          onlydefault: false,
+        });
+      }
+      if(data.status=='WaitingForIncomingTransfer'){
+        _buttons.push({
+          id         : 'cancelinbtn',
+          text       : window._lang.btn_cancel,
+          icon       : 'fa-ban',
+          classes    : 'btn-outline-dark btn-outline',
+          onlydefault: false,
+        });
+      }
+
+
+
       let _buttontext = '';
 
       //@todo Buradaki conditionu ypaamadım...
@@ -147,16 +178,18 @@ $(document).on('event.domains', function() {
           return;
         }
 
-        _buttontext += '<a href="javascript:void(0)" id="' + v.id + '-' +
-            data.id + '" data-id="' + data.id + '" data-provier="' +
-            data.submodule + '" class="btn btn-sm ' + v.classes + ' ' + v.id +
-            '" title="' + v.text + '"><i class="fa ' + v.icon + '"></i></a> ';
+        _buttontext += '<a href="javascript:void(0)" ' +
+            'id="' + v.id + '-' +data.id + '" ' +
+            'data-id="' + data.id + '" ' +
+            'data-domain="' + data.domain + '" ' +
+            'class="btn btn-sm ' + v.classes + ' ' + v.id +'" ' +
+            'title="' + v.text + '"' +
+            '><i class="fa ' + v.icon + '"></i></a> ';
 
       });
 
       $('td', row).eq(4).html(_buttontext);
 
-      //endregion
 
     },
     fnRowCallback : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -165,20 +198,20 @@ $(document).on('event.domains', function() {
     fnInitComplete: function(oSettings, json) {
 
       let selection_buttons = '';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-inport"><i class="fa fa-download"></i> Import <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> Sync <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> Set Contact <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> Set NS <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> Set Lock <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-approveout"><i class="fa fa-mail-forward"></i> Approve Out. Tr. <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> Reject Out. Tr. <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-cancelin"><i class="fa fa-ban"></i> Cancel Inc. Tr. <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-primary btn-quickaction btn-action-inport"><i class="fa fa-download"></i> '+window._lang.btn_import+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-success btn-quickaction btn-action-sync"><i class="fa fa-recycle"></i> '+window._lang.btn_sync+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> '+window._lang.btn_contact+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-warning btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> '+window._lang.btn_ns+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> '+window._lang.btn_lock+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-approveout"><i class="fa fa-forward"></i> '+window._lang.btn_approve+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-danger btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> '+window._lang.btm_reject+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-dark btn-quickaction btn-action-cancelin"><i class="fa fa-ban"></i> '+window._lang.btn_cancel+' <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
 
 
       let option_filter = '';
-      option_filter += ' <div id="filterbystatus">Filter By Status : <select class="selectpicker searching-statuses show-tick" multiple data-selected-text-format="count > 3" multiple data-actions-box="true">';
+      option_filter += ' <div id="filterbystatus">'+window._lang.btn_filter_by_status+' : <select class="selectpicker searching-statuses show-tick" multiple data-selected-text-format="count > 3" multiple data-actions-box="true">';
 
       $.each(json.searchPanes.options.status, function(k, v) {
         option_filter += '<option value="' + v.label + '" selected>' + v.label +' ('+ v.count +') </option>';
@@ -279,6 +312,81 @@ $(document).on("change",".cb-quick-action" ,function() {
 
 });
 
+$(document).on("click",'.importbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  console.log(processing_domains);
+  import_modal_display();
+
+});
+
+$(document).on("click",'.syncbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  sync_modal_display();
+
+});
+
+$(document).on("click",'.contactbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  contact_modal_display();
+
+});
+
+
+$(document).on("click",'.nameserverbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  setns_modal_display();
+
+});
+
+$(document).on("click",'.lockbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  setlock_modal_display();
+
+});
+
+$(document).on("click",'.approveoutbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  approveouttransfer_modal_display();
+
+});
+
+$(document).on("click",'.rejectoutbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  rejectouttransfer_modal_display();
+
+});
+
+$(document).on("click",'.cancelinbtn', function(){
+  processing_domains= [];
+
+  processing_domains.push({domain:$(this).attr('data-domain'),domainid:$(this).attr('data-id')});
+
+  cancelinctransfer_modal_display();
+
+});
+
+
 //Import Modal
 $(document).on("click",'.btn-action-inport', function(){
 
@@ -324,6 +432,25 @@ $(document).on("click",'.btn-action-sync', function(){
 
 });
 
+//Set Contact Modal
+$(document).on("click",'.btn-action-contact', function(){
+
+  processing_domains= [];
+
+  $.each($('.cb-quick-action:checked'), function(k, v) {
+     if($(v).attr('data-active')=='true') {
+       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
+       processing_domains.push(_obj);
+     }
+  });
+
+  if(processing_domains.length>0){
+    contact_modal_display();
+  }
+
+
+});
+
 //Set Nameserver Modal
 $(document).on("click",'.btn-action-setns', function(){
 
@@ -344,90 +471,6 @@ $(document).on("click",'.btn-action-setns', function(){
 
 });
 
-//Set Contact Modal
-$(document).on("click",'.btn-action-contact', function(){
-
-  processing_domains= [];
-
-  $.each($('.cb-quick-action:checked'), function(k, v) {
-     if($(v).attr('data-active')=='true') {
-       let _obj = {domain: $(v).attr('data-domain'), domainid: $(v).val()};
-       processing_domains.push(_obj);
-     }
-  });
-
-
-
-  let contactform = draw_contact_form();
-
-  if(processing_domains.length>0){
-
-    let _pr = processing_domains[0];
-
-    $.ajax({
-    url     : generateUrl('domain.contact'),
-    type    : 'POST',
-    data    : _pr,
-    dataType: 'json',
-    success : function(data) {
-
-      if(data.contact){
-        if(data.contact.result=='OK'){
-
-          let tab_fields = [
-            'Administrative',
-            'Registrant',
-            'Billing',
-            'Technical',
-          ];
-
-          $.each(tab_fields, function(k, v) {
-
-            let tab_id = v.toLowerCase();
-
-            $('#contacts-'+tab_id+'-'+'firstname').val(data.contact.data.contacts[v]['FirstName']);
-            $('#contacts-'+tab_id+'-'+'lastname').val(data.contact.data.contacts[v]['LastName']);
-            $('#contacts-'+tab_id+'-'+'companyname').val(data.contact.data.contacts[v]['Company']);
-            $('#contacts-'+tab_id+'-'+'phonecountrycode').val(data.contact.data.contacts[v]['Phone']['Phone']['CountryCode']);
-            $('#contacts-'+tab_id+'-'+'phone').val(data.contact.data.contacts[v]['Phone']['Phone']['Number']);
-            $('#contacts-'+tab_id+'-'+'faxcountrycode').val(data.contact.data.contacts[v]['Phone']['Fax']['CountryCode']);
-            $('#contacts-'+tab_id+'-'+'fax').val(data.contact.data.contacts[v]['Phone']['Fax']['Number']);
-            $('#contacts-'+tab_id+'-'+'address1').val(data.contact.data.contacts[v]['Address']['Line1']);
-            $('#contacts-'+tab_id+'-'+'address2').val(data.contact.data.contacts[v]['Address']['Line2']);
-            $('#contacts-'+tab_id+'-'+'address3').val(data.contact.data.contacts[v]['Address']['Line3']);
-            $('#contacts-'+tab_id+'-'+'state').val(data.contact.data.contacts[v]['Address']['State']);
-            $('#contacts-'+tab_id+'-'+'city').val(data.contact.data.contacts[v]['Address']['City']);
-            $('#contacts-'+tab_id+'-'+'country').val(data.contact.data.contacts[v]['Address']['Country']);
-            $('#contacts-'+tab_id+'-'+'zipcode').val(data.contact.data.contacts[v]['Address']['ZipCode']);
-
-
-
-          });
-
-        }
-      }
-
-      $('#modalloadingspinner').remove();
-
-    }
-  });
-
-  }
-
-
-  $('#generalmodal .modal-title').html('Contacts');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setcontact">Set Contact</button>');
-  $('#generalmodal .modal-body').html(contactform);
-
-  $('#generalmodal').modal('show');
-
-
-   $.each(processing_domains, function(k, v) {
-    console.log(v.domain);
-    $('#setcontactdomaintable tbody').append('<tr><td>' + v.domain + '</td><td  class="setcontactresult setcontactresult-'+v.domainid+'"></td></tr>');
-  });
-
-});
 
 //Set Lock Modal
 $(document).on("click",'.btn-action-setlock', function(){
@@ -512,7 +555,7 @@ $(document).on("click",'#importdomains', function(){
 
   $('#generalmodal').modal('hide');
 
-  $('#modulebody').prepend('<div id="alert-loading" class="alert alert-info"><fa class="fa fa-spinner fa-spin fa-3x fa-fw"></fa> Loading...</div>');
+  $('#modulebody').prepend('<div id="alert-loading" class="alert alert-info"><fa class="fa fa-spinner fa-spin fa-3x fa-fw"></fa> '+window._lang.loading+'</div>');
 
   $.ajax({
     url     : generateUrl('domain.import'),
@@ -538,7 +581,7 @@ $(document).on("click",'#importdomains', function(){
 //Modal Button Sync
 $(document).on("click",'#syncdomains', function(){
   $('#syncdomains').button('loading');
-  $('.syncing').html('<fa class="fa fa-spinner fa-spin fa-fw syncloading"></fa> Loading...');
+  $('.syncing').html('<fa class="fa fa-spinner fa-spin fa-fw syncloading"></fa> '+window._lang.loading+'');
   if (processing_domains.length > 0) {
     asyncSyncXHR(0);
   }
@@ -557,7 +600,7 @@ $(document).on("click",'#setcontact', function(){
 
   }else{
       $("#contactform")[0].reportValidity();
-      $('#contactform').prepend('<div class="alert alert-danger">Required fields must be filled</div>');
+      $('#contactform').prepend('<div class="alert alert-danger">'+window._lang.required_filters_error+'</div>');
       $('#setcontact').button('reset');
   }
 
@@ -644,7 +687,7 @@ $(document).on('change', '.makesame', function() {
 
 
 //Modal Draw Contact Form
-function draw_contact_form() {
+function contact_modal_display() {
 
 
   let tab_fields = [
@@ -702,7 +745,7 @@ function draw_contact_form() {
   formHtml += '</div> ';
 
 formHtml += '<div class="col-md-4"> ';
-formHtml += '<div class="table-container setcstblcontainer"> <table class="table table-striped table-bordered table-hover" id="setcontactdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div>';
+formHtml += '<div class="table-container setcstblcontainer"> <table class="table table-striped table-bordered table-hover" id="setcontactdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div>';
 
 
 
@@ -711,7 +754,7 @@ formHtml += '<div class="table-container setcstblcontainer"> <table class="table
     let tab_id = tab.toLowerCase();
     let samewith = index === 0
         ? ''
-        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">Make ${tab} values same with "Registrant" </label><br>`;
+        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">${tab} '+window._lang.values_with+' </label><br>`;
     formHtml += `${samewith} `;
   });
 
@@ -719,7 +762,72 @@ formHtml += '<div class="table-container setcstblcontainer"> <table class="table
 
   formHtml += '<div class="clearfix"></form>';
 
-  return formHtml;
+
+
+  $('#generalmodal .modal-title').html(window._lang.btn_contact);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setcontact">'+window._lang.btn_contact+'</button>');
+  $('#generalmodal .modal-body').html(formHtml);
+
+  $('#generalmodal').modal('show');
+
+
+   $.each(processing_domains, function(k, v) {
+    $('#setcontactdomaintable tbody').append('<tr><td>' + v.domain + '</td><td  class="setcontactresult setcontactresult-'+v.domainid+'"></td></tr>');
+  });
+
+
+
+    let _pr = processing_domains[0];
+
+    $.ajax({
+    url     : generateUrl('domain.contact'),
+    type    : 'POST',
+    data    : _pr,
+    dataType: 'json',
+    success : function(data) {
+
+      if(data.contact){
+        if(data.contact.result=='OK'){
+
+          let tab_fields = [
+            'Administrative',
+            'Registrant',
+            'Billing',
+            'Technical',
+          ];
+
+          $.each(tab_fields, function(k, v) {
+
+            let tab_id = v.toLowerCase();
+
+            $('#contacts-'+tab_id+'-'+'firstname').val(data.contact.data.contacts[v]['FirstName']);
+            $('#contacts-'+tab_id+'-'+'lastname').val(data.contact.data.contacts[v]['LastName']);
+            $('#contacts-'+tab_id+'-'+'companyname').val(data.contact.data.contacts[v]['Company']);
+            $('#contacts-'+tab_id+'-'+'phonecountrycode').val(data.contact.data.contacts[v]['Phone']['Phone']['CountryCode']);
+            $('#contacts-'+tab_id+'-'+'phone').val(data.contact.data.contacts[v]['Phone']['Phone']['Number']);
+            $('#contacts-'+tab_id+'-'+'faxcountrycode').val(data.contact.data.contacts[v]['Phone']['Fax']['CountryCode']);
+            $('#contacts-'+tab_id+'-'+'fax').val(data.contact.data.contacts[v]['Phone']['Fax']['Number']);
+            $('#contacts-'+tab_id+'-'+'address1').val(data.contact.data.contacts[v]['Address']['Line1']);
+            $('#contacts-'+tab_id+'-'+'address2').val(data.contact.data.contacts[v]['Address']['Line2']);
+            $('#contacts-'+tab_id+'-'+'address3').val(data.contact.data.contacts[v]['Address']['Line3']);
+            $('#contacts-'+tab_id+'-'+'state').val(data.contact.data.contacts[v]['Address']['State']);
+            $('#contacts-'+tab_id+'-'+'city').val(data.contact.data.contacts[v]['Address']['City']);
+            $('#contacts-'+tab_id+'-'+'country').val(data.contact.data.contacts[v]['Address']['Country']);
+            $('#contacts-'+tab_id+'-'+'zipcode').val(data.contact.data.contacts[v]['Address']['ZipCode']);
+
+
+
+          });
+
+        }
+      }
+
+      $('#modalloadingspinner').remove();
+
+    }
+  });
+
+
 
 }
 
@@ -728,9 +836,9 @@ function import_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Import');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="importdomains">Import</button>');
-  $('#generalmodal .modal-body').html('<div class="row"><form id="importform" class="col-md-12"><div class="portlet light bordered"><div class="portlet-body"><div class="table-container"><table class="table table-striped table-bordered table-hover" id="importtable"><thead><tr><th>Domain</th><th>Client</th></tr></thead><tbody></tbody></table></div></div></div></form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_import);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="importdomains">'+window._lang.btn_import+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"><form id="importform" class="col-md-12"><div class="portlet light bordered"><div class="portlet-body"><div class="table-container"><table class="table table-striped table-bordered table-hover" id="importtable"><thead><tr><th>'+window._lang.domain+'</th><th>'+window._lang.domain+'</th></tr></thead><tbody></tbody></table></div></div></div></form></div>');
 
   $.each(processing_domains, function(k, v) {
     $('#importtable tbody').append('<tr><td>'+v.domain+'</td><td><select id="ajax-select'+v.domainid+'" name="importuser['+v.domainid+']" class="selectpicker2 with-ajax" data-live-search="true"></select></td></tr>')
@@ -780,9 +888,9 @@ function sync_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Sync');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="syncdomains">Sync</button>');
-  $('#generalmodal .modal-body').html('<div class="row"><form id="syncform" class="col-md-12"><div class="alert alert-info">'+window._lang.syncinfo+'</div><div class="portlet light bordered"><div class="portlet-body"><div class="table-container"><table class="table table-striped table-bordered table-hover" id="importtable"><thead><tr><th>Domain</th><th>Sync</th></tr></thead><tbody></tbody></table></div></div><br></div></form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_sync);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="syncdomains">'+window._lang.btn_sync+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"><form id="syncform" class="col-md-12"><div class="alert alert-info">'+window._lang.syncinfo+'</div><div class="portlet light bordered"><div class="portlet-body"><div class="table-container"><table class="table table-striped table-bordered table-hover" id="importtable"><thead><tr><th>'+window._lang.domain+'</th><th>'+window._lang.domain+'</th></tr></thead><tbody></tbody></table></div></div><br></div></form></div>');
 
   $.each(processing_domains, function(k, v) {
     $('#importtable tbody').append('<tr><td>'+v.domain+'</td><td class="syncing syncid-'+v.domainid+'"> </td></tr>')
@@ -795,9 +903,9 @@ function sync_modal_display(){
 function setns_modal_display(){
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Set Nameserver');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setnameservers">Set Nameservers</button>');
-  $('#generalmodal .modal-body').html('<div class="row"> <form id="setnsform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnstable"> <thead> <tr> <th></th> <th>NS</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnsdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_ns);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setnameservers">'+window._lang.btn_ns+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setnsform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnstable"> <thead> <tr> <th></th> <th>'+window._lang.nstxt+'</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setnsdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
 
   $.each([1,2,3,4,5], function(k, v) {
     $('#setnstable tbody').append('<tr><td>NS'+v+'</td><td><input name="ns['+v+']" class="form-control"></td></tr>')
@@ -815,14 +923,14 @@ function setlock_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Set Locks');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setlockstatus">Set Lock Status</button>');
-  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlocktable"> <thead> <tr><th>Type</th> <th>Lock Status</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_lock);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="setlockstatus">'+window._lang.btn_lock+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlocktable"> <thead> <tr><th>'+window._lang.type+'</th> <th>'+window._lang.locktype+'</th> </tr> </thead> <tbody></tbody> </table> </div> </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
 
 
-    $('#setlocktable tbody').append('<tr><td>Privacy Protection</td><td><select name="privacy" class="form-control"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></td></tr>')
+    $('#setlocktable tbody').append('<tr><td>'+window._lang.privacy_protection+'</td><td><select name="privacy" class="form-control"><option value="enabled">'+window._lang.enabled+'</option><option value="disabled">'+window._lang.disabled+'</option></select></td></tr>')
 
-    $('#setlocktable tbody').append('<tr><td>Thieft Protection</td><td><select name="thieft" class="form-control"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></td></tr>')
+    $('#setlocktable tbody').append('<tr><td>'+window._lang.thieft_protection+'</td><td><select name="thieft" class="form-control"><option value="enabled">'+window._lang.enabled+'</option><option value="disabled">'+window._lang.disabled+'</option></select></td></tr>')
 
 
   $.each(processing_domains, function(k, v) {
@@ -837,9 +945,9 @@ function cancelinctransfer_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Cancel Incoming Transfer');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="cancelinctransfer">Cancel Incoming Transfer</button>');
-  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These incoming transfers will be cancelled </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_cancel);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="cancelinctransfer">'+window._lang.btn_cancel+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>'+window._lang.cancel_warning+' </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
 
   $.each(processing_domains, function(k, v) {
     $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
@@ -853,9 +961,9 @@ function rejectouttransfer_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Reject outgoing Transfer');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="rejectouttransfer">Reject outgoing Transfer</button>');
-  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These outgoing transfers will be rejected </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_reject);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="rejectouttransfer">'+window._lang.btn_reject+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>'+window._lang.reject_warning+'</div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
 
   $.each(processing_domains, function(k, v) {
     $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
@@ -869,9 +977,9 @@ function approveouttransfer_modal_display(){
 
 
   $('#generalmodal').modal('show');
-  $('#generalmodal .modal-title').html('Approve outgoing Transfer');
-  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="approveouttransfer">Approve outgoing Transfer</button>');
-  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>These outgoing transfers will be approved </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>Domain(s)</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
+  $('#generalmodal .modal-title').html(window._lang.btn_approve);
+  $('#generalmodal .modal-footer .extrabuttons').html('<button type="button" class="btn btn-primary" id="approveouttransfer">'+window._lang.btn_approve+'</button>');
+  $('#generalmodal .modal-body').html('<div class="row"> <form id="setlockform" class="col-md-12"> <div class="portlet light bordered"> <div class="portlet-body"> <div class="col-md-8"> <br><br>'+window._lang.approve_warning+' </div>  <div class="col-md-4"> <div class="table-container"> <table class="table table-striped table-bordered table-hover" id="setlockdomaintable"> <thead> <tr> <th>'+window._lang.domains+'</th><th></th> </tr> </thead> <tbody></tbody> </table> </div> </div> <div class="clearfix"></div> </div> </div> </form></div>');
 
   $.each(processing_domains, function(k, v) {
     $('#setlockdomaintable tbody').append('<tr><td>'+v.domain+'</td><td  class="transfergeneral transfergeneral-'+v.domainid+'"></td></tr>')
