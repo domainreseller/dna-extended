@@ -4,7 +4,7 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 <i class="fa fa-wrench"></i>
-                Latest Synced Domains
+                {$_lang.dash_lastsync}
             </div>
             <div class="panel-body">
 
@@ -29,7 +29,7 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 <i class="fa fa-server"></i>
-                Latest Incoming Transfers ({$incoming_count})
+                {$_lang.dash_incoming} ({$incoming_count})
             </div>
             <div class="panel-body">
 
@@ -52,7 +52,7 @@
         <div class="panel panel-warning">
             <div class="panel-heading">
                 <i class="fa fa-users"></i>
-                Latest Outgoing Transfers ({$outgoing_count})
+                {$_lang.dash_outgoing} ({$outgoing_count})
             </div>
             <div class="panel-body">
 
@@ -75,7 +75,7 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 <i class="fa fa-database"></i>
-                Latest System Check
+                {$_lang.dash_syscheck}
             </div>
             <div class="panel-body">
 

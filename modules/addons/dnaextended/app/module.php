@@ -18,6 +18,8 @@ require_once 'app.php';
 class module {
 
 
+
+
     public function makeSync(){
 
         $page_limit = 500;
@@ -154,7 +156,7 @@ class module {
         $_LANG = $this->getLanguage();
 
         //$lang = language::parseAll();
-        $smarty->assign('LANG', $_LANG);
+        $smarty->assign('_lang', $_LANG);
 
         $smarty->setTemplateDir($viewdir);
 
@@ -185,17 +187,22 @@ class module {
 
     /** @noinspection PhpIncludeInspection */
     public function getLanguage() {
-        $langfile = MODULE_DIR . "/app/lang/{$this->language}.php";
+
+        $this_language = Capsule::table('tbladmins')->where('id', $_SESSION['adminid'])->first()->language;
+
+
+
+        $langfile = __DIR__ . "/../lang/{$this_language}.php";
 
         $_LANG = [];
         if (!is_file($langfile)) {
-            $langfile = MODULE_DIR . "/app/lang/turkish.php";
+            $langfile =__DIR__ . "/../lang/english.php";
         }
 
         include $langfile;
 
         //$lang = language::parseAll();
-        return $_LANG;
+        return $_ADDONLANG;
 
     }
 

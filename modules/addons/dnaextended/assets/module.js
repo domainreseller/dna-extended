@@ -6,7 +6,7 @@
  * Bünyamin AKÇAY <bunyamin@bunyam.in>
  */
 let modulename = $('#module-name').val();
-let loadinghtml = '<div style="width: 100%; text-align: center; margin-top: 70px;"><span class="module-loader" style="line-height: 100px;">Loading...</span></div>';
+let loadinghtml = '<div style="width: 100%; text-align: center; margin-top: 70px;"><span class="module-loader" style="line-height: 100px;">'+window._lang.loading+'</span></div>';
 let currentmodalid='';
 
 
@@ -45,6 +45,10 @@ $(document).ready(function () {
             return 0;
         }
 
+        if($(this).parent("li").hasClass("active")){
+          return 0;
+        }
+
         $("ul.moduletopbarnav li").removeClass("active");
         $(this).parent("li").addClass("active");
 
@@ -54,50 +58,6 @@ $(document).ready(function () {
     $("#whmcsdevbanner").remove();
 });
 
-
-
-
-function modalDrawer(controller,parameters={},togglemodal=true,buttons={}){
-
-    let modalname = 'modal'+Math.floor(Math.random()*1000);
-    currentmodalid=modalname;
-
-    let _btntxt='';
-
-    $.each(buttons, function (k, v) {
-        _btntxt+='<a href="javascript:void(0)" class="btn '+v.class+'" id="'+v.id+'">'+v.text+'</a>';
-    });
-
-
-    let modalhtml ='<div class="modal fade" id="'+modalname+'" role="dialog">' +
-        '    <div class="modal-dialog modal-lg">' +
-        '        <div class="modal-content">' +
-        '            <div class="modal-header">' +
-        '                <button type="button" class="close" data-dismiss="modal">&times;</button>' +
-        '                <h4 class="modal-title"><i class="fa fa-log"></i><span id="'+modalname+'title"></span></h4>' +
-        '            </div>' +
-        '            <div class="modal-body" id="'+modalname+'body">' +
-        '            </div>' +
-        '            <div class="modal-footer">' + _btntxt+
-        '                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>' +
-        '            </div>' +
-        '        </div>' +
-        '    </div>' +
-        '</div>';
-
-    $('body').append(modalhtml);
-    $("#"+modalname).on('hidden.bs.modal', function () {
-        $(this).data('bs.modal', null);
-        $("#"+modalname).remove();
-    });
-
-    let currentModal = $("#"+modalname);
-
-    if (togglemodal) {
-        currentModal.modal('toggle');
-    }
-    drawlayout(controller, parameters , modalname+'body');
-}
 
 function drawlayout(layout, parameters,conainer='modulebody',viewtype='html') {
 

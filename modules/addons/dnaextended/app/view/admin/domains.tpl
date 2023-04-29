@@ -3,9 +3,9 @@
     <thead>
     <tr>
         <th>#</th>
-        <th> Domain</th>
-        <th> Status</th>
-        <th> Client</th>
+        <th>{$_lang.domains_list_domain}</th>
+        <th>{$_lang.domains_list_status}</th>
+        <th>{$_lang.domains_list_client}</th>
         <th> </th>
     </tr>
     </thead>
