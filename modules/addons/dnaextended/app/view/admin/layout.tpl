@@ -26,6 +26,7 @@
                 <li class="active"><a href="#"class="moduleurl" data-target="dashboard" >Dashboard</a></li>
                 <li><a href="#" class="moduleurl" data-target="balance">Balance & Payments</a></li>
                 <li><a href="#" class="moduleurl" data-target="domains">All Domains</a></li>
+                <li><a href="#" class="moduleurl" data-target="settings">Settings</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

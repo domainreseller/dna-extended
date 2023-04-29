@@ -16,3 +16,4 @@ $a = new DNA($dnasettings['API_UserName'], $dnasettings['API_Password']);
 $reseller_details = $a->GetResellerDetails();
 
 $controlleroutput = $reseller_details;
+

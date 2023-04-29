@@ -38,13 +38,18 @@ $latest_outgoing = Illuminate\Database\Capsule\Manager::table('mod_dnaextended_d
                                    ->limit(5)
                                    ->get();
 
+$lastcronrun = Illuminate\Database\Capsule\Manager::table('tblconfiguration')
+                                                  ->where('setting', 'DNADomainSyncLastPage')
+                                                  ->first();
+
+
 
 
 
 
 $controlleroutput['domains'] = $latest_domains;
 
-$controlleroutput['latestcron'] = date('Y-m-d H:i:s');
+$controlleroutput['latestcron'] = $lastcronrun->updated_at;
 
 $controlleroutput['incoming'] = $latest_incoming;
 $controlleroutput['incoming_count'] = $all_incoming_count;

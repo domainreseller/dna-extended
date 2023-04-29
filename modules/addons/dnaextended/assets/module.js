@@ -11,13 +11,14 @@ let currentmodalid='';
 
 
 let modules = [
-    'domains'
+    'domains',
+    'settings'
 ];
 let dt_var = {
     dom: '<\'row\'<\'col-sm-6 actionbuttons\'><\'col-sm-6 actionbuttons2\'f>><\'row\'<\'col-sm-12\'r><\'col-sm-12\'t>><\'row\'<\'col-sm-4\'l><\'col-sm-4\'i><\'col-sm-4\'p>>',
-    language: {
-        "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
-    },
+    //language: {
+    //    "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+    //},
     processing: true,
     serverSide: true,
     searching: true,
