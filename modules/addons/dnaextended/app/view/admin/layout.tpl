@@ -79,6 +79,7 @@
     text_search_client : '{$_lang.text_search_client}',
     syncinfo : '{$_lang.syncinfo}',
     loading : '{$_lang.loading}',
+    btn_import : '{$_lang.btn_import}',
     btn_sync : '{$_lang.btn_sync}',
     btn_contact : '{$_lang.btn_contact}',
     btn_ns : '{$_lang.btn_ns}',

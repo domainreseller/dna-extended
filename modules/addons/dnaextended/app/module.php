@@ -18,6 +18,46 @@ require_once 'app.php';
 class module {
 
 
+    public static function functionEnabled($function)
+    {
+        $disabledFunctions = preg_split("/\\s*\\,\\s*/", trim(ini_get("disable_functions")));
+        return (bool) ($function !== "" && !in_array(strtolower($function), $disabledFunctions));
+    }
+    public  function isFunctionAvailable($function)
+    {
+        return function_exists($function) && self::functionEnabled($function);
+    }
+
+
+    public function getPreferredCliBinary() {
+        try {
+            if (static::isFunctionAvailable("php_ini_loaded_file")) {
+                $iniPath = php_ini_loaded_file();
+                if (strpos($iniPath, "/opt/cpanel/") === 0) {
+                    $phpBinary = preg_replace("/etc\\/php.ini\$/", "usr/bin/php", $iniPath);
+                    if (file_exists($phpBinary)) {
+                        return $phpBinary;
+                    }
+                }
+            }
+        } catch (\Error $e) {
+        } catch (\Exception $e) {
+        }
+
+        $potentialPhpBinaries = array(
+            "/usr/bin/php-cli",
+            "/usr/local/bin/php-cli",
+            "/usr/bin/php",
+            "/usr/local/bin/php"
+        );
+        foreach ($potentialPhpBinaries as $phpBinary) {
+            if (file_exists($phpBinary)) {
+                return $phpBinary;
+            }
+        }
+        return "php";
+    }
+
 
 
     public function makeSync(){

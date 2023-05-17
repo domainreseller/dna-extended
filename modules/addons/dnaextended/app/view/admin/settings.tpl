@@ -15,7 +15,7 @@
                     <tr>
                         <td>{$_lang.cron_settings}</td>
                         <td>
-                            <code>*/10 * * * * {$cronfile}</code>
+                            <code>*/10 * * * * {$cronbinary} -q {$cronfile}</code>
 
 
                         </td>
