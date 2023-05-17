@@ -93,6 +93,7 @@ function dnaextended_output($vars) {
 
     $parameters = $vars;
 
+
     require_once __DIR__ . '/app/module.php';
     $module = new \DNA_Extended\module();
 

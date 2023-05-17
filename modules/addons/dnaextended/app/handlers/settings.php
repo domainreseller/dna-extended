@@ -13,6 +13,9 @@ $lastcronrun = Illuminate\Database\Capsule\Manager::table('tblconfiguration')
                                                   ->first();
 
 
+
+
+$controlleroutput['cronbinary']=$module->getPreferredCliBinary();
 $controlleroutput['cronfile']=realpath(dirname(__DIR__.'/../../../')).'/cron.php';
 $controlleroutput['latestcron']=$lastcronrun->updated_at;
 $controlleroutput['settings']=$dnasettings;

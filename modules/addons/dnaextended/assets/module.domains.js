@@ -150,7 +150,7 @@ $(document).on('event.domains', function() {
         });
         _buttons.push({
           id         : 'rejectoutbtn',
-          text       : window._lang.btm_reject,
+          text       : window._lang.btn_reject,
           icon       : 'fa-arrow-circle-right',
           classes    : 'btn-outline-danger btn-outline',
           onlydefault: false,
@@ -204,7 +204,7 @@ $(document).on('event.domains', function() {
       selection_buttons += '<a class="btn btn-sm btn-outline-warning btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> '+window._lang.btn_ns+' <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> '+window._lang.btn_lock+' <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-approveout"><i class="fa fa-forward"></i> '+window._lang.btn_approve+' <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-danger btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> '+window._lang.btm_reject+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-danger btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> '+window._lang.btn_reject+' <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-outline-dark btn-quickaction btn-action-cancelin"><i class="fa fa-ban"></i> '+window._lang.btn_cancel+' <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
