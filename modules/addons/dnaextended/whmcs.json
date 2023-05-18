@@ -1,0 +1,36 @@
+{
+  "schema": "1.0",
+  "type": "whmcs-addons",
+  "name": "dnaextended",
+  "license": "proprietary",
+  "category": "utilities",
+  "description": {
+    "name": "DNA Extended",
+    "tagline": "DNA Extended is a WHMCS addon that allows you to manage your DomainNameApi account from within WHMCS.",
+    "long": "DNA Extended is a WHMCS addon that allows you to manage your DNA Extended account from within WHMCS. It allows you to create, suspend, unsuspend and terminate accounts, as well as change passwords and change package.",
+    "features": [
+      "View all your domain names",
+      "Perform bulk synchronization",
+      "Import in bulk",
+      "Make bulk communication changes",
+      "Make bulk NS changes",
+      "Edit bulk Privacy and Domain Lock"
+    ]
+  },
+  "logo": {
+    "filename": "logo.png"
+  },
+  "support": {
+    "homepage": "https://domainnameapi/whmcs/dnaextended/",
+    "docs_url": "https://bunyam.in/docs/dnaextended/"
+  },
+  "authors": [
+    {
+      "name": "Bünyamin AKÇAY",
+      "homepage": "https://www.bunyam.in/"
+    }
+  ],
+  "keywords": [
+    "domain"
+  ]
+}

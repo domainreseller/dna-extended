@@ -34,7 +34,7 @@ $(document).ready(function () {
     }
 
     $.each(modules, function (k, v) {
-        $('body').append('<script src="../modules/addons/'+modulename+'/assets/module.' + v + '.js?v='+vvv+'"></script>');
+        $('body').append('<script src="../modules/addons/'+modulename+'/assets/module.' + v + '.js?v='+vvv+'1"></script>');
     });
 
 

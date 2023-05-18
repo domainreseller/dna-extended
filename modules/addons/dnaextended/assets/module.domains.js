@@ -754,7 +754,7 @@ formHtml += '<div class="table-container setcstblcontainer"> <table class="table
     let tab_id = tab.toLowerCase();
     let samewith = index === 0
         ? ''
-        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">${tab} '+window._lang.values_with+' </label><br>`;
+        : `<br><label class="checkbox-inline" for="checkboxes-${index}"  >  <input type="checkbox" id="checkboxes-${index}" class="makesame" name="makesame[]" value="${tab_id}" data-tabid="${tab_id}">${tab} ${window._lang.values_with} </label><br>`;
     formHtml += `${samewith} `;
   });
 
