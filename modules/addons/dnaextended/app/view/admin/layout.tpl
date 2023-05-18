@@ -117,6 +117,6 @@
 
 
 <link href="../modules/addons/{$smarty.get.module}/assets/bootstrap.theme.css?v={$version}" rel="stylesheet">
-<link href="../modules/addons/{$smarty.get.module}/assets/module.css?v={$version}" rel="stylesheet">
-<script src="../modules/addons/{$smarty.get.module}/assets/module.js?v={$version}"></script>
+<link href="../modules/addons/{$smarty.get.module}/assets/module.css?v={$version}3" rel="stylesheet">
+<script src="../modules/addons/{$smarty.get.module}/assets/module.js?v={$version}55"></script>
 

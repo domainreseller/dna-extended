@@ -18,8 +18,8 @@ use WHMCS\Module\Addon\AddonModule\Client\ClientDispatcher;
 function dnaextended_config() {
     $configarray = array(
         "name"        => "DNA Extended",
-        "description" => "DNA Extended  <br>More information : <a href=\"https://bunyam.in/whmcs/\">https://isinuzmani.com/whmcs/</a>",
-        "version"     => "1.43.".rand(10,99000),
+        "description" => "DomainNameApi Extended module   <br>More information : <a href=\"https://bunyam.in/whmcs/\">https://bunyam.in/whmcs/</a>",
+        "version"     => "1.43",
         "author"      => "Bünyamin AKÇAY",
         "language"    => "english",
         "fields"      => array()
