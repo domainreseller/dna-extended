@@ -194,6 +194,7 @@ $(document).on('event.domains', function() {
     },
     fnRowCallback : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
+
     },
     fnInitComplete: function(oSettings, json) {
 
@@ -233,9 +234,9 @@ $(document).on('event.domains', function() {
       });
 
 
-
     },
     fnDrawCallback: function(oSettings) {
+       $('#cbsa').html('<input type="checkbox" id="cbselectall" />');
     },
     //"order": [[4, 'asc']]
   });
@@ -245,6 +246,15 @@ $(document).on('event.domains', function() {
 });
 
 //Checkboxes checked events
+$(document).on('change', '#cbselectall', function() {
+
+  console.log($(this).is('checked'));
+
+  $('.cb-quick-action').prop('checked', $(this).prop('checked'));
+
+});
+
+
 $(document).on("change",".cb-quick-action" ,function() {
 
   let _count = $('.cb-quick-action:checked').length;

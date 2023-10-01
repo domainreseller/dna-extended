@@ -1,4 +1,4 @@
-<!--
+{*
 <div id="isinuzmani-links">
     <div class="head">
         <div class="logo">
@@ -44,4 +44,4 @@
         Version {$version}
     </div>
 </div>
--->
+*}
