@@ -24,6 +24,12 @@ ile aşağıdaki özellikleri elde edebilirsiniz:
 * Toplu Gizlilik ve Domain kilidi düzenleme
 * Toplu Olarak Gelen ve giden transferleri iptal yada onaylama
 
+## 📦 İndirme — her zaman Releases kullanın!
+
+⬇️ **En güncel ve test edilmiş sürümü buradan indirin: https://github.com/domainreseller/dna-extended/releases/latest**
+
+> ⚠️ Yeşil **Code → Download ZIP** düğmesini **kullanmayın** — bu düğme, geliştirme aşamasındaki ham dalı indirir. Release paketleri sürümlenmiş, test edilmiş ve canlı kullanıma hazırdır.
+
 Gereksinimler
 -------------
 
@@ -40,6 +46,20 @@ Kurulum
 3. Sistem Ayarları > Eklenti Modülleri veya WHMCS 8.0'den önce Setup > Eklenti Modülleri bölümüne gelin.
 4. DNA Extended Modülünü göreceksiniz , aktif edin ve Konfigurasyonlarında hangi admin grubuna yetkileri vereceğinizi
    seçin.
+
+## 🔑 API Kimlik Bilgileri — Kullanıcı Adı/Şifre mi, Reseller ID/API Key mi?
+
+Her ikisi de desteklenir — bilgileri aynı iki modül alanına girin; modül hangi API'nin kullanılacağını otomatik olarak algılar:
+
+| Elinizdeki bilgi | "Kullanıcı Adı" alanı | "Şifre" alanı | Kullanılan API |
+|---|---|---|---|
+| **Yeni panel kimlik bilgileri** (önerilen) | Reseller ID — `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` biçiminde UUID | API Key | REST |
+| **Eski (legacy) kimlik bilgileri** | API kullanıcı adı | API şifresi | SOAP |
+
+> 💡 **Reseller ID** ve **API Key** bilgilerinizi DomainNameAPI panelinizde **API Ayarları** bölümünde bulabilirsiniz.
+> ⚠️ Bunlar **API kimlik bilgileridir** — panele giriş yaptığınız e-posta ve şifre burada **ÇALIŞMAZ**! Mutlaka **API Ayarları** bölümündeki **Reseller ID (UUID)** ve **API Key** kullanılmalıdır.
+
+Ek bir yapılandırma gerekmez — kullanıcı adı alanında bir UUID varsa modül modern REST API'yi, aksi halde klasik SOAP'ı kullanır.
 
 Tanımlamalar
 ------------

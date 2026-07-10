@@ -24,6 +24,12 @@ Deze module stelt u in staat om al uw domeinnamen in WHMCS te beheren met behulp
 * Bulk-privacy- en domeinvergrendeling bewerken
 * Bulk-annulering of bevestiging van inkomende en uitgaande transfers
 
+## 📦 Download — gebruik altijd de Releases!
+
+⬇️ **Download hier de nieuwste geteste versie: https://github.com/domainreseller/dna-extended/releases/latest**
+
+> ⚠️ Gebruik **niet** de groene knop **Code → Download ZIP** — daarmee downloadt u de ruwe ontwikkelbranch. Release-pakketten zijn geversioneerd, getest en klaar voor productie.
+
 Vereisten
 ---------
 
@@ -38,6 +44,20 @@ Installatie
 2. Log in op het beheerderspaneel van WHMCS.
 3. Ga naar Instellingen > Add-on Modules of voor WHMCS 8.0 en eerder naar Setup > Add-on Modules.
 4. U ziet de DNA Extended-module, activeer deze en selecteer welke beheerdersgroep de rechten moet hebben in de configuraties.
+
+## 🔑 API-inloggegevens — Gebruikersnaam/Wachtwoord of Reseller ID/API Key?
+
+Beide worden ondersteund — voer ze in dezelfde twee modulevelden in; de module detecteert automatisch welke API wordt gebruikt:
+
+| U heeft | Veld "Gebruikersnaam" | Veld "Wachtwoord" | Gebruikte API |
+|---|---|---|---|
+| **Nieuwe panel-inloggegevens** (aanbevolen) | Reseller ID — UUID zoals `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | API Key | REST |
+| **Oude (legacy) inloggegevens** | API-gebruikersnaam | API-wachtwoord | SOAP |
+
+> 💡 U vindt uw **Reseller ID** en **API Key** in uw DomainNameAPI-paneel onder **API-instellingen**.
+> ⚠️ Dit zijn **API-inloggegevens** — het e-mailadres en wachtwoord waarmee u in het paneel inlogt, werken hier **niet**.
+
+Er is geen extra configuratie nodig — als het gebruikersnaamveld een UUID bevat, gebruikt de module de moderne REST-API, anders klassiek SOAP.
 
 Configuratie
 ------------

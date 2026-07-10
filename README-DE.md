@@ -24,6 +24,12 @@ Dieses Modul ermöglicht die Verwaltung aller Domainnamen in WHMCS unter Verwend
 * Massenbearbeitung von Privatsphäre und Domain-Sperre
 * Massenweise Genehmigung oder Ablehnung eingehender und ausgehender Transfers
 
+## 📦 Download — immer die Releases verwenden!
+
+⬇️ **Die neueste getestete Version finden Sie hier: https://github.com/domainreseller/dna-extended/releases/latest**
+
+> ⚠️ Verwenden Sie **nicht** den grünen Button **Code → Download ZIP** — damit laden Sie den rohen Entwicklungszweig herunter. Release-Pakete sind versioniert, getestet und produktionsbereit.
+
 Anforderungen
 -------------
 
@@ -38,6 +44,20 @@ Installation
 2. Melden Sie sich beim WHMCS-Administrationsbereich an.
 3. Navigieren Sie zu Setup > Addon Modules (oder Setup > Eklenti Modülleri vor WHMCS 8.0).
 4. Sie sehen das DNA Extended-Modul. Aktivieren Sie es und wählen Sie die Administratorgruppe aus, der Sie Berechtigungen erteilen möchten.
+
+## 🔑 API-Zugangsdaten — Benutzername/Passwort oder Reseller ID/API Key?
+
+Beides wird unterstützt — tragen Sie die Daten in dieselben zwei Modulfelder ein; das Modul erkennt automatisch, welche API verwendet wird:
+
+| Sie haben | Feld "Benutzername" | Feld "Passwort" | Verwendete API |
+|---|---|---|---|
+| **Neue Panel-Zugangsdaten** (empfohlen) | Reseller ID — UUID im Format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | API Key | REST |
+| **Alte (Legacy-)Zugangsdaten** | API-Benutzername | API-Passwort | SOAP |
+
+> 💡 Ihre **Reseller ID** und Ihren **API Key** finden Sie in Ihrem DomainNameAPI-Panel unter **API-Einstellungen**.
+> ⚠️ Dies sind **API-Zugangsdaten** — die E-Mail-Adresse und das Passwort Ihres Panel-Logins funktionieren hier **nicht**.
+
+Es ist keine zusätzliche Konfiguration erforderlich — enthält das Benutzernamensfeld eine UUID, verwendet das Modul die moderne REST-API, andernfalls klassisches SOAP.
 
 Konfigurationen
 ---------------

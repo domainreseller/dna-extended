@@ -22,6 +22,12 @@ Domainnameapi.com WHMCS 插件模块
 * 批量隐私和域名锁定编辑
 * 批量确认或取消传入和传出的转移
 
+## 📦 下载 — 请务必使用 Releases！
+
+⬇️ **在此获取最新的已测试版本：https://github.com/domainreseller/dna-extended/releases/latest**
+
+> ⚠️ 请**不要**使用绿色的 **Code → Download ZIP** 按钮 — 它下载的是未经处理的开发分支。Release 包经过版本管理和测试，可直接用于生产环境。
+
 要求
 ----
 
@@ -36,6 +42,20 @@ Domainnameapi.com WHMCS 插件模块
 2. 登录 WHMCS 管理面板。
 3. 转到 "系统设置" > "插件模块" 或在 WHMCS 8.0 之前转到 "设置" > "插件模块"。
 4. 您会看到 DNA Extended 模块，请激活它并选择哪个管理员组应具有权限在配置中进行更改。
+
+## 🔑 API 凭据 — 用户名/密码还是 Reseller ID/API Key？
+
+两种方式均受支持 — 将凭据填入相同的两个模块字段即可；模块会自动检测应使用哪种 API：
+
+| 您拥有的凭据 | "用户名" 字段 | "密码" 字段 | 使用的 API |
+|---|---|---|---|
+| **新版面板凭据**（推荐） | Reseller ID — 形如 `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` 的 UUID | API Key | REST |
+| **旧版凭据** | API 用户名 | API 密码 | SOAP |
+
+> 💡 您可以在 DomainNameAPI 面板的 **API 设置** 中找到您的 **Reseller ID** 和 **API Key**。
+> ⚠️ 这些是 **API 凭据** — 您登录面板所用的电子邮箱和密码在此**无法使用**。
+
+无需额外配置 — 如果用户名字段中填写的是 UUID，模块将使用现代 REST API，否则使用经典 SOAP。
 
 配置
 ----
