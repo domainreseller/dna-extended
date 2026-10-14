@@ -33,7 +33,7 @@ Tələblər
 ---------
 
 * WHMCS 7.0 və ya yüksək versiya
-* PHP 7.2 və ya yüksək (Aktiv olunmuş Soap və Curl tətbiqləri olmalıdır)
+* PHP 7.2 və ya yüksək (Aktiv olunmuş Curl tətbiqi olmalıdır)
 * Aktivləşdirilmiş və tənzimlənmiş domainnameapi Registrar modulu.
 
 Quraşdırma
@@ -44,19 +44,12 @@ Quraşdırma
 3. Setup > Addon Modules bölməsinə daxil olun (WHMCS 8.0-dən əvvəl Setup > Addon Modules bölməsi).
 4. DNA Extended Modulunu görəcəksiniz, aktivləşdirin və icazələri verəcəyiniz admin qrupunu konfiqurasiyalarında seçin.
 
-## 🔑 API Giriş Məlumatları — İstifadəçi adı/Şifrə, yoxsa Reseller ID/API Key?
+## 🔑 API Giriş Məlumatları — Reseller ID və API Key
 
-Hər ikisi dəstəklənir — məlumatları eyni iki modul sahəsinə daxil edin; modul hansı API-nin istifadə olunacağını avtomatik müəyyən edir:
-
-| Sizdə olan | "İstifadəçi adı" sahəsi | "Şifrə" sahəsi | İstifadə olunan API |
-|---|---|---|---|
-| **Yeni panel giriş məlumatları** (tövsiyə olunur) | Reseller ID — `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` formatında UUID | API Key | REST |
-| **Köhnə (legacy) giriş məlumatları** | API istifadəçi adı | API şifrəsi | SOAP |
+Əlavə, `domainnameapi` registrar modulunda təyin olunmuş giriş məlumatlarından istifadə edir. Orada **Reseller ID** sahəsinə `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` formatındakı Reseller ID-nizi, **API Key** sahəsinə isə API Key-inizi daxil edin.
 
 > 💡 **Reseller ID** və **API Key** məlumatlarınızı DomainNameAPI panelinizdə **API Parametrləri** bölməsində tapa bilərsiniz.
-> ⚠️ Bunlar **API giriş məlumatlarıdır** — panelə daxil olduğunuz e-poçt və şifrə burada **işləməyəcək**.
-
-Əlavə konfiqurasiya tələb olunmur — istifadəçi adı sahəsində UUID varsa, modul müasir REST API-dən, əks halda klassik SOAP-dan istifadə edir.
+> ⚠️ Bunlar **API giriş məlumatlarıdır** — panelə daxil olduğunuz məlumatlar burada **işləməyəcək**.
 
 Tənzimləmələr
 ------------

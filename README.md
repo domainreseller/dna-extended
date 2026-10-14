@@ -34,7 +34,7 @@ Gereksinimler
 -------------
 
 * WHMCS 7.0 veya üzeri
-* PHP 7.2 veya üzeri (Soap ve Curl eklentileri etkin olmalıdır)
+* PHP 7.2 veya üzeri (Curl eklentisi etkin olmalıdır)
 * Aktifleştirilmiş ve konfigure edilmiş domainnameapi Registrar modülü.
 
 Kurulum
@@ -47,19 +47,12 @@ Kurulum
 4. DNA Extended Modülünü göreceksiniz , aktif edin ve Konfigurasyonlarında hangi admin grubuna yetkileri vereceğinizi
    seçin.
 
-## 🔑 API Kimlik Bilgileri — Kullanıcı Adı/Şifre mi, Reseller ID/API Key mi?
+## 🔑 API Kimlik Bilgileri — Reseller ID ve API Key
 
-Her ikisi de desteklenir — bilgileri aynı iki modül alanına girin; modül hangi API'nin kullanılacağını otomatik olarak algılar:
-
-| Elinizdeki bilgi | "Kullanıcı Adı" alanı | "Şifre" alanı | Kullanılan API |
-|---|---|---|---|
-| **Yeni panel kimlik bilgileri** (önerilen) | Reseller ID — `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` biçiminde UUID | API Key | REST |
-| **Eski (legacy) kimlik bilgileri** | API kullanıcı adı | API şifresi | SOAP |
+Eklenti, `domainnameapi` kayıt operatörü (registrar) modülünde tanımlı kimlik bilgilerini kullanır. Orada **Reseller ID** alanına `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` biçimindeki Reseller ID'nizi, **API Key** alanına ise API Key'inizi girin.
 
 > 💡 **Reseller ID** ve **API Key** bilgilerinizi DomainNameAPI panelinizde **API Ayarları** bölümünde bulabilirsiniz.
-> ⚠️ Bunlar **API kimlik bilgileridir** — panele giriş yaptığınız e-posta ve şifre burada **ÇALIŞMAZ**! Mutlaka **API Ayarları** bölümündeki **Reseller ID (UUID)** ve **API Key** kullanılmalıdır.
-
-Ek bir yapılandırma gerekmez — kullanıcı adı alanında bir UUID varsa modül modern REST API'yi, aksi halde klasik SOAP'ı kullanır.
+> ⚠️ Bunlar **API kimlik bilgileridir** — panele giriş yaptığınız bilgiler burada **ÇALIŞMAZ**! Mutlaka **API Ayarları** bölümündeki **Reseller ID (UUID)** ve **API Key** kullanılmalıdır.
 
 Tanımlamalar
 ------------

@@ -32,7 +32,7 @@ Requirements
 ------------
 
 * WHMCS 7.0 or above
-* PHP 7.2 or above (with enabled Soap and Curl extensions)
+* PHP 7.2 or above (with enabled Curl extension)
 * Activated and configured `domainnameapi` Registrar module.
 
 Installation
@@ -43,19 +43,12 @@ Installation
 3. Go to Setup > Addon Modules or, before WHMCS 8.0, Setup > Addon Modules section.
 4. You will see the DNA Extended Module, activate it, and choose which admin group to grant permissions to in the configurations.
 
-## 🔑 API Credentials — Username/Password or Reseller ID/API Key?
+## 🔑 API Credentials — Reseller ID & API Key
 
-Both are supported — enter them into the same two module fields; the module detects which API to use automatically:
-
-| You have | "Username" field | "Password" field | API used |
-|---|---|---|---|
-| **New panel credentials** (recommended) | Reseller ID — UUID like `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | API Key | REST |
-| **Legacy credentials** | API username | API password | SOAP |
+The addon uses the credentials configured in the `domainnameapi` registrar module. Enter your Reseller ID (a UUID like `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) into its **Reseller ID** field and your API Key into its **API Key** field.
 
 > 💡 Find your **Reseller ID** and **API Key** in your DomainNameAPI panel under **API Settings**.
-> ⚠️ These are **API credentials** — your panel login e-mail and password will **not** work here.
-
-No extra configuration is needed — if the username field contains a UUID the module uses the modern REST API, otherwise classic SOAP.
+> ⚠️ These are **API credentials** — your panel login details will **not** work here.
 
 Setup
 -----

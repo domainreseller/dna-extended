@@ -32,7 +32,7 @@ Exigences
 ---------
 
 * WHMCS 7.0 ou supérieur
-* PHP 7.2 ou supérieur (Extensions Soap et Curl activées)
+* PHP 7.2 ou supérieur (Extension Curl activée)
 * Module d'enregistrement domainnameapi activé et configuré
 
 Installation
@@ -43,19 +43,12 @@ Installation
 3. Accédez à Configuration > Modules complémentaires (ou Configuration > Eklenti Modülleri avant WHMCS 8.0).
 4. Vous verrez le module DNA Extended. Activez-le et sélectionnez le groupe d'administrateurs auxquels vous souhaitez accorder des autorisations.
 
-## 🔑 Identifiants API — Nom d'utilisateur/Mot de passe ou Reseller ID/API Key ?
+## 🔑 Identifiants API — Reseller ID et API Key
 
-Les deux sont pris en charge — saisissez-les dans les deux mêmes champs du module ; le module détecte automatiquement l'API à utiliser :
-
-| Vous disposez de | Champ « Nom d'utilisateur » | Champ « Mot de passe » | API utilisée |
-|---|---|---|---|
-| **Nouveaux identifiants du panneau** (recommandé) | Reseller ID — UUID au format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | API Key | REST |
-| **Anciens identifiants (legacy)** | Nom d'utilisateur API | Mot de passe API | SOAP |
+L'addon utilise les identifiants configurés dans le module registrar `domainnameapi`. Saisissez-y votre Reseller ID (un UUID au format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) dans le champ **Reseller ID** et votre API Key dans le champ **API Key**.
 
 > 💡 Vous trouverez votre **Reseller ID** et votre **API Key** dans votre panneau DomainNameAPI, section **Paramètres API**.
-> ⚠️ Ce sont des **identifiants API** — l'e-mail et le mot de passe de connexion à votre panneau ne fonctionneront **pas** ici.
-
-Aucune configuration supplémentaire n'est nécessaire — si le champ nom d'utilisateur contient un UUID, le module utilise l'API REST moderne, sinon le SOAP classique.
+> ⚠️ Ce sont des **identifiants API** — vos identifiants de connexion au panneau ne fonctionneront **pas** ici.
 
 Configurations
 --------------

@@ -34,7 +34,7 @@ Vereisten
 ---------
 
 * WHMCS 7.0 of hoger
-* PHP 7.2 of hoger (met actieve Soap- en Curl-extensies)
+* PHP 7.2 of hoger (met actieve Curl-extensie)
 * Geactiveerde en geconfigureerde domainnameapi-registrarmodule
 
 Installatie
@@ -45,19 +45,12 @@ Installatie
 3. Ga naar Instellingen > Add-on Modules of voor WHMCS 8.0 en eerder naar Setup > Add-on Modules.
 4. U ziet de DNA Extended-module, activeer deze en selecteer welke beheerdersgroep de rechten moet hebben in de configuraties.
 
-## 🔑 API-inloggegevens — Gebruikersnaam/Wachtwoord of Reseller ID/API Key?
+## 🔑 API-inloggegevens — Reseller ID en API Key
 
-Beide worden ondersteund — voer ze in dezelfde twee modulevelden in; de module detecteert automatisch welke API wordt gebruikt:
-
-| U heeft | Veld "Gebruikersnaam" | Veld "Wachtwoord" | Gebruikte API |
-|---|---|---|---|
-| **Nieuwe panel-inloggegevens** (aanbevolen) | Reseller ID — UUID zoals `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | API Key | REST |
-| **Oude (legacy) inloggegevens** | API-gebruikersnaam | API-wachtwoord | SOAP |
+De addon gebruikt de inloggegevens die in de registrarmodule `domainnameapi` zijn ingesteld. Voer daar uw Reseller ID (een UUID zoals `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) in het veld **Reseller ID** in en uw API Key in het veld **API Key**.
 
 > 💡 U vindt uw **Reseller ID** en **API Key** in uw DomainNameAPI-paneel onder **API-instellingen**.
-> ⚠️ Dit zijn **API-inloggegevens** — het e-mailadres en wachtwoord waarmee u in het paneel inlogt, werken hier **niet**.
-
-Er is geen extra configuratie nodig — als het gebruikersnaamveld een UUID bevat, gebruikt de module de moderne REST-API, anders klassiek SOAP.
+> ⚠️ Dit zijn **API-inloggegevens** — de gegevens waarmee u in het paneel inlogt, werken hier **niet**.
 
 Configuratie
 ------------

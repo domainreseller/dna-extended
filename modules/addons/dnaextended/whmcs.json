@@ -7,7 +7,7 @@
   "description": {
     "name": "DNA Extended",
     "tagline": "DNA Extended is a WHMCS addon that allows you to manage your DomainNameApi account from within WHMCS.",
-    "long": "DNA Extended is a WHMCS addon that allows you to manage your DNA Extended account from within WHMCS. It allows you to create, suspend, unsuspend and terminate accounts, as well as change passwords and change package.",
+    "long": "DNA Extended is a WHMCS addon that allows you to manage your DomainNameApi account from within WHMCS. It allows you to view, synchronize and import your domain names, and make bulk contact, nameserver, privacy, domain lock and transfer changes.",
     "features": [
       "View all your domain names",
       "Perform bulk synchronization",
