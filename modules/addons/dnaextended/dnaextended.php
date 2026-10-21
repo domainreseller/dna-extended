@@ -19,7 +19,7 @@ function dnaextended_config() {
     $configarray = array(
         "name"        => "DNA Extended",
         "description" => "DomainNameApi Extended module   <br>More information : <a href=\"https://bunyam.in/whmcs/\">https://bunyam.in/whmcs/</a>",
-        "version"     => "4.0.0",
+        "version"     => "4.0.2",
         "author"      => "Bünyamin AKÇAY",
         "language"    => "english",
         "fields"      => array()
