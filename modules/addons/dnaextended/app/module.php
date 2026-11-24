@@ -81,6 +81,7 @@ class module {
 
 
         $a = new DNA($settings['API_UserName'], $settings['API_Password']);
+        if (method_exists($a, 'setClientInfo')) { $a->setClientInfo('dnaextended', function_exists('dnaextended_config') ? (string) (dnaextended_config()['version'] ?? '') : ''); }
 
         $query = [
             'OrderColumn'    => 'Id',

@@ -12,6 +12,7 @@ use \DomainNameApi\DomainNameAPI_PHPLibrary as DNA;
 
 
 $a = new DNA($dnasettings['API_UserName'], $dnasettings['API_Password']);
+if (method_exists($a, 'setClientInfo')) { $a->setClientInfo('dnaextended', function_exists('dnaextended_config') ? (string) (dnaextended_config()['version'] ?? '') : ''); }
 
 $id = $_REQUEST['domainid'];
 
