@@ -9,6 +9,19 @@ let domainstable;
 let post_parameters=[];
 let processing_domains  = [];
 
+// The registry API no longer offers approve/reject outgoing or cancel incoming
+// transfer, so those buttons stay visible but are disabled with an explanation.
+const RETIRED_TRANSFER_HINT = 'This action is no longer supported by the API';
+const RETIRED_TRANSFER_STYLE = 'opacity:.5;cursor:not-allowed;';
+
+// Registered first so it swallows clicks on retired buttons before any other
+// delegated handler on document runs.
+$(document).on('click', '.btn-retired', function(e) {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  return false;
+});
+
 $(document).on('event.domains', function() {
 
   //region ZoneDatatableINIT
@@ -143,6 +156,7 @@ $(document).on('event.domains', function() {
       if(data.status=='WaitingForOutgoingTransfer'){
         _buttons.push({
           id         : 'approveoutbtn',
+          retired    : true,
           text       : window._lang.btn_approve,
           icon       : 'fa-forward',
           classes    : 'btn-outline-secondary btn-outline',
@@ -150,6 +164,7 @@ $(document).on('event.domains', function() {
         });
         _buttons.push({
           id         : 'rejectoutbtn',
+          retired    : true,
           text       : window._lang.btn_reject,
           icon       : 'fa-arrow-circle-right',
           classes    : 'btn-outline-danger btn-outline',
@@ -159,6 +174,7 @@ $(document).on('event.domains', function() {
       if(data.status=='WaitingForIncomingTransfer'){
         _buttons.push({
           id         : 'cancelinbtn',
+          retired    : true,
           text       : window._lang.btn_cancel,
           icon       : 'fa-ban',
           classes    : 'btn-outline-dark btn-outline',
@@ -182,8 +198,9 @@ $(document).on('event.domains', function() {
             'id="' + v.id + '-' +data.id + '" ' +
             'data-id="' + data.id + '" ' +
             'data-domain="' + data.domain + '" ' +
-            'class="btn btn-sm ' + v.classes + ' ' + v.id +'" ' +
-            'title="' + v.text + '"' +
+            'class="btn btn-sm ' + v.classes + ' ' + v.id + (v.retired ? ' btn-retired' : '') + '" ' +
+            'title="' + (v.retired ? v.text + ' - ' + RETIRED_TRANSFER_HINT : v.text) + '"' +
+            (v.retired ? ' aria-disabled="true" style="' + RETIRED_TRANSFER_STYLE + '"' : '') +
             '><i class="fa ' + v.icon + '"></i></a> ';
 
       });
@@ -204,9 +221,9 @@ $(document).on('event.domains', function() {
       selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-contact"><i class="fa fa-calendar"></i> '+window._lang.btn_contact+' <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-outline-warning btn-quickaction btn-action-setns"><i class="fa fa-bars"></i> '+window._lang.btn_ns+' <span class="selectedcount"></span></a> ';
       selection_buttons += '<a class="btn btn-sm btn-outline-info btn-quickaction btn-action-setlock"><i class="fa fa-lock"></i> '+window._lang.btn_lock+' <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-approveout"><i class="fa fa-forward"></i> '+window._lang.btn_approve+' <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-danger btn-quickaction btn-action-rejectout"><i class="fa fa-arrow-circle-right"></i> '+window._lang.btn_reject+' <span class="selectedcount"></span></a> ';
-      selection_buttons += '<a class="btn btn-sm btn-outline-dark btn-quickaction btn-action-cancelin"><i class="fa fa-ban"></i> '+window._lang.btn_cancel+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-secondary btn-quickaction btn-action-approveout btn-retired" aria-disabled="true" style="'+RETIRED_TRANSFER_STYLE+'" title="'+RETIRED_TRANSFER_HINT+'"><i class="fa fa-forward"></i> '+window._lang.btn_approve+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-danger btn-quickaction btn-action-rejectout btn-retired" aria-disabled="true" style="'+RETIRED_TRANSFER_STYLE+'" title="'+RETIRED_TRANSFER_HINT+'"><i class="fa fa-arrow-circle-right"></i> '+window._lang.btn_reject+' <span class="selectedcount"></span></a> ';
+      selection_buttons += '<a class="btn btn-sm btn-outline-dark btn-quickaction btn-action-cancelin btn-retired" aria-disabled="true" style="'+RETIRED_TRANSFER_STYLE+'" title="'+RETIRED_TRANSFER_HINT+'"><i class="fa fa-ban"></i> '+window._lang.btn_cancel+' <span class="selectedcount"></span></a> ';
 
       $('.actionbuttons').html(selection_buttons);
 

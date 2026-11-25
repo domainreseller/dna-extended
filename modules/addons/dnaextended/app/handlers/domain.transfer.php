@@ -20,20 +20,16 @@ $record = Capsule::table('mod_dnaextended_domains')
                  ->where('id', $id)
                  ->first();
 
-$result1=[];
-
-
-if($_REQUEST['transferaction']=='cancel') {
-    $result1 = $a->CancelTransfer($record->domain);
-}
-
-if($_REQUEST['transferaction']=='approve') {
-    $result1 = $a->ApproveTransfer($record->domain);
-}
-
-if($_REQUEST['transferaction']=='reject') {
-    $result1 = $a->RejectTransfer($record->domain);
-}
+// Approve/reject outgoing and cancel incoming transfer were retired by the
+// API (no longer in the REST gateway); the buttons are disabled in the UI and
+// the library no longer has these methods, so answer without calling it.
+$result1 = [
+    'result' => 'ERROR',
+    'error'  => [
+        'Code'    => 'TRANSFER_ACTION_RETIRED',
+        'Details' => 'This action is no longer supported by the API',
+    ],
+];
 
 
 $controlleroutput['result']  = ($result1["result"] == "OK"? 'success' : 'failed');
